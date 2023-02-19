@@ -1,0 +1,94 @@
+:root {
+    --light_gray: #D3D3D3;
+    --white: #FFFFFF;
+    --black: #000000;
+}
+
+* {
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+}
+
+/* CSS for the header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--light_gray);
+    color: var(--white);
+    padding: 10px;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--black);
+}
+
+.btn {
+    background-color: var(--light_gray);
+    color: #333;
+    border: none;
+    padding: 8px 3px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* CSS for the welcome message */
+.welcome-message {
+    margin: 25% 5% 25% 5%;
+    background-color: var(--white);
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.5;
+    padding: 5%;
+    border: 1px solid var(--black);
+    border-radius: 15px 50px;
+}
+
+/* CSS for the next page button */
+.next-page {
+    margin-top: 45px;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.next-button {
+    font-size: 150%;
+    background-color: transparent;
+    color: var(--black);
+    padding: 10% 15%;
+    border: 2px solid var(--black);
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
+}
+
+.btn-next {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 600px) {
+    .welcome-message {
+        margin: 5%;
+    }
+    .next-button{
+        padding: 2%;
+    }
+}

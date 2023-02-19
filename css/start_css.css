@@ -1,0 +1,89 @@
+:root {
+    --light_gray: #D3D3D3;
+    --white: #FFFFFF;
+    --black: #000000;
+}
+
+* {
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+}
+
+/* CSS for the header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--light_gray);
+    color: var(--white);
+    padding: 10px;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--black);
+}
+
+.btn {
+    background-color: var(--light_gray);
+    color: #333;
+    border: none;
+    margin-left: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+.btn:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* CSS for the message */
+.message {
+    margin: 5%;
+    background-color: var(--white);
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.5;
+    padding: 2%;
+    border: 1px solid var(--black);
+    border-radius: 15px;
+}
+
+/* CSS for the lists */
+
+.lists {
+    list-style-type: none;
+    padding: 0;
+    justify-content: space-around;
+    align-items: center;
+    background-color: transparent;
+    margin: 10px;
+}
+
+.list {
+    text-align: left;
+    border: none;
+    background-color: transparent;
+    padding: 2em 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.list:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+#bold_text{
+    color: red;
+    font-size: 1.5em;
+}
