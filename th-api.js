@@ -150,10 +150,12 @@ function answerQuestion(sessionId, answer) {
                 if (correct) {
                     console.log("Correct answer! " + message);
                     console.log("Score adjustment: " + scoreAdjustment);
+                    questions(sessionId);
                 }
                 else {
                     console.log(message);
                     console.log("Score adjustment: " + scoreAdjustment);
+                    questions(sessionId);
                 }
                 if (completed) {
                     console.log("Congratulations, you have completed the treasure hunt!");
