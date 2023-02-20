@@ -254,5 +254,34 @@ function displayLeaderboard(sessionId) {
         .catch(error => console.error(error));
 }
 
+function displayLeaderboard(sessionId) {
+
+    const leaderboardURL = `https://codecyprus.org/th/api/leaderboard?session=${sessionId}&sorted&limit=10`;
+
+    fetch(leaderboardURL)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const {status, numOfPlayers, sorted, limit, hasPrize, leaderboard, treasureHuntName} = jsonObject;
+            if (status === "OK") {
+                console.log("Treasure Hunt: " + treasureHuntName);
+                console.log("Number of Players: " + numOfPlayers);
+                console.log("Sorted: " + sorted);
+                console.log("Limit: " + limit);
+                console.log("Has prize: " + hasPrize);
+                console.log("Leaderboard:");
+                for (let i = 0; i < leaderboard.length; i++) {
+                    const playerName = leaderboard[i].player;
+                    const score = leaderboard[i].score;
+                    const completionTime = leaderboard[i].completionTime === 0 ? "Unfinished" : new Date(leaderboard[i].completionTime).toLocaleString();
+                    console.log(`${i + 1}. ${playerName} - Score: ${score}, Completion Time: ${completionTime}`);
+                }
+            }
+            else {
+                console.log(status + ': ' + jsonObject.errorMessages);
+            }
+        })
+        .catch(error => console.error(error));
+}
+
 
 
