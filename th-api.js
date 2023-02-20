@@ -125,7 +125,7 @@ function questions(session) {
             console.log("Requires Location?: " + requiresLocation);
             //if(requiresLocation === true){
                 getLocation(session);
-                setInterval(getLocation, 30000, session);
+                setInterval(getLocation, 31000, session);
             //}
 
             console.log("Question index: " + currentQuestionIndex);
