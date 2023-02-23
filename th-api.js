@@ -35,6 +35,10 @@ const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the test API base 
 }*/
 
 const challengesList = document.getElementById('treasureHunts');
+const messageBox = document.getElementById('message');
+const buttons = document.getElementById('buttons');
+const thead = document.getElementById('thead');
+const tbody = document.getElementById('tbody');
 
 function getChallenges() {
     fetch("https://codecyprus.org/th/api/list")
@@ -51,8 +55,8 @@ function getChallenges() {
                         "<b id='bold_text'>" + treasureHuntsArray[i].name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                         "<i>" + treasureHuntsArray[i].description + "</i><br/>" + // and the description in italics in the following line
                         "Ends in: " + weeks_left + " weeks</li></button>";// and the description in italics in the following lin
-                    challengesList.innerHTML += listHtml;
                     listHtml += "</ul>";
+                    challengesList.innerHTML += listHtml;
                 }
             }
             else {
@@ -71,39 +75,52 @@ getChallenges();
  * @param treasureName
  * @return {Promise<void>}
  */
-const messageStart = document.getElementById('messageStart');
 function select(uuid, treasureName) {
-
-    //window.location.href = "start_css.html";
 
     console.log("Selected treasure hunt with UUID: " + uuid);
     console.log(treasureName);
-    // todo add your own code ...
 
-    //messageStart.innerHTML += "<p> This is '" + treasureName + "' treasure. Now tell us your " +
-        //"name and email, and we are ready to go!</p>";
+    buttons.innerHTML = "<a onclick=\"\" class=\"btn\"><b>Enter Code</b></a>";
+    messageBox.innerHTML = "<p>We are looking for the '" + treasureName + "' treasure. Now tell us your name and " +
+        "email, and we are ready to go!</p>";
+    challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"name\">Name:</label>" +
+        "<input type=\"text\" class=\"input\" id=\"name\" name=\"name\" placeholder=\"Enter your name\" required></br></br>" +
+        "<label for=\"email\">Email:</label><input type=\"email\" class=\"input\" id=\"email\" name=\"email\" placeholder=\"Enter your email\"></div>" +
+        "<button type=\"submit\">Submit</button></form>";
 
-    const playerName = prompt("Please enter your name or nickname:");
-    const startUrl = `https://codecyprus.org/th/api/start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
 
-    fetch(startUrl)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, numOfQuestions, session } = jsonObject;
-            if(status === "OK") {
-                console.log(`Treasure hunt started with session ID: ${session}`);
-                console.log(`Total number of questions: ${numOfQuestions}`);
-                questions(session);
-            }
-            else{
-                console.log(status);
-            }
-        })
-        .catch(error => console.error(error));
+    let form = document.getElementById("form");
+    form.addEventListener("submit", function start(event) {
+        event.preventDefault(); // prevent the form from submitting
+
+        const playerName = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+
+        // do something with the name and email values, such as sending them to a server
+
+        const startUrl = `https://codecyprus.org/th/api/start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
+
+        fetch(startUrl)
+            .then(response => response.json())
+            .then(jsonObject => {
+                const {status, numOfQuestions, session} = jsonObject;
+                if (status === "OK") {
+                    console.log(`Treasure hunt started with session ID: ${session}`);
+                    console.log(`Total number of questions: ${numOfQuestions}`);
+                    questions(session);
+                } else {
+                    console.log(status);
+                }
+            })
+            .catch(error => console.error(error));
+    });
 }
 
 function questions(session) {
     // Define the API endpoint URL
+
     const questionUrl = `https://codecyprus.org/th/api/question?session=${session}`;
 
     // Make a GET request to the API endpoint using fetch()
@@ -112,28 +129,79 @@ function questions(session) {
         .then(jsonObject => {
             const { questionText, questionType, canBeSkipped, requiresLocation, currentQuestionIndex,
                 correctScore, wrongScore, skipScore } = jsonObject;
-            // Log the retrieved question and its details to the console
-            console.log("Question-Text: " + questionText);
-            console.log("Question-Type: " + questionType);
 
             console.log("Can be Skipped: " + canBeSkipped);
+
+            buttons.innerHTML = "";
             // Call skipQuestion function
-            //if(canBeSkipped === true) {
-                //skipQuestion(session);
-            //}
+            if(canBeSkipped === true) {
+                buttons.innerHTML = "<a onclick=\"skipQuestion(\'" + session + "\')\" class=\"btn\"><b>Skip</b></a>";
+            }
+
+            buttons.innerHTML += "<a onclick=\"\" class=\"btn\"><b>QR</b></a>";
+            buttons.innerHTML += "<a onclick=\"\" class=\"btn\"><b>Menu</b></a>";
+
+            // Log the retrieved question and its details to the console
+            console.log("Question-Text: " + questionText);
+            messageBox.innerHTML = "<p>" + questionText + "</p>";
+
+            if(canBeSkipped === false) {
+                messageBox.innerHTML += "<p class=\"skip_text\">Cannot be skipped!</p>";
+            }
+
+
+            console.log("Question-Type: " + questionType);
+            if(questionType === "BOOLEAN") {
+                challengesList.innerHTML = "<form id=\"form\"><label for=\"response\">Is it true or false?</label>" +
+                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"true\">True</button>" +
+                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"false\">False</button></form>";
+            }
+
+            if(questionType === "INTEGER") {
+                challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                    "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an integer...\" required>" +
+                    "</div><button type=\"submit\">Submit</button></form>";
+            }
+
+            if(questionType === "NUMERIC") {
+                challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                    "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an number...\" step=\"0.01\" required>" +
+                    "</div><button type=\"submit\">Submit</button></form>";
+            }
+
+            if(questionType === "MCQ") {
+                challengesList.innerHTML = "<form id=\"form\"><label for=\"response\">Select an option:</label>" +
+                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"A\">A</button>" +
+                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"B\">B</button>" +
+                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"C\">C</button>" +
+                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"D\">D</button></form>";
+            }
+
+            if(questionType === "TEXT") {
+                challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                    "<input type=\"text\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Answer here...\" required>" +
+                    "</div><button type=\"submit\">Submit</button></form>";
+            }
 
             console.log("Requires Location?: " + requiresLocation);
-            //if(requiresLocation === true){
+            if(requiresLocation === true) {
                 getLocation(session);
                 setInterval(getLocation, 31000, session);
-            //}
+            }
 
             console.log("Question index: " + currentQuestionIndex);
             console.log("Score if correct answer: " + correctScore);
             console.log("Score if wrong answer: " + wrongScore);
             console.log("Score if skip to answer: " + skipScore);
-            answerQuestion(session, prompt("Enter an answer:"));
-            displayLeaderboard(session);
+
+            let form = document.getElementById("form");
+            form.addEventListener("submit", function(event) {
+                event.preventDefault(); // prevent the form from submitting
+                const answer = document.getElementById("answer").value;
+                answerQuestion(session, answer);
+            });
+
+            //displayLeaderboard(session); //will be removed
 
         })
         .catch(error => console.error(error)); // Handle any errors
@@ -150,16 +218,19 @@ function answerQuestion(sessionId, answer) {
                 if (correct) {
                     console.log("Correct answer! " + message);
                     console.log("Score adjustment: " + scoreAdjustment);
+                    //score(sessionId);
                     questions(sessionId);
+
                 }
                 else {
                     console.log(message);
                     console.log("Score adjustment: " + scoreAdjustment);
-                    questions(sessionId);
+                    //score(sessionId);
                 }
+
                 if (completed) {
                     console.log("Congratulations, you have completed the treasure hunt!");
-                    //displayLeaderboard(sessionId);
+                    displayLeaderboard(sessionId);
                 }
             }
             else {
@@ -203,6 +274,7 @@ function skipQuestion(sessionId) {
                 console.log("Completed:" + completed);
                 console.log("Message:" + message);
                 console.log("Score-Adjustment: " + scoreAdjustment);
+                questions(sessionId);
             }
         })
         .catch(error => console.error(error));
@@ -218,10 +290,10 @@ function score(sessionId) {
         .then(jsonObject => {
             const {status, completed, finished, player, score} = jsonObject;
             if (status === "OK") {
-                console.log("Completed:" + completed);
-                console.log("Finished:" + finished);
-                console.log("Player:" + player);
-                console.log("Score:" + score);
+                console.log("Completed: " + completed);
+                console.log("Finished: " + finished);
+                console.log("Player: " + player);
+                console.log("Score: " + score);
             }
         })
         .catch(error => console.error(error));
@@ -242,10 +314,19 @@ function displayLeaderboard(sessionId) {
                 console.log("Limit: " + limit);
                 console.log("Has prize: " + hasPrize);
                 console.log("Leaderboard:");
+                messageBox.innerHTML = "<p><b>Scoreboard</b></p>";
+                challengesList.innerHTML = "";
+                buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
+                buttons.innerHTML += "<a onclick=\"select(\'" + sessionId + "\' ,\'" + treasureHuntName + "\')\" class=\"btn\"><b>Play Again</b></a>";
+                thead.innerHTML = "<tr class=\"tr\"><th class=\"th\">Rank</th>" +
+                    "<th class=\"th\">Name</th><th class=\"th\">Score</th><th class=\"th\">Completion Time</th></tr>";
                 for (let i = 0; i < leaderboard.length; i++) {
                     const playerName = leaderboard[i].player;
                     const score = leaderboard[i].score;
                     const completionTime = leaderboard[i].completionTime === 0 ? "Unfinished" : new Date(leaderboard[i].completionTime).toLocaleString();
+                    tbody.innerHTML += "<tr class=\"tr\"><td class=\"td\">" + (i + 1) + "</td><td class=\"td\">" + playerName + "</td>" +
+                        "<td class=\"td\">" + score + "</td><td class=\"td\">" + completionTime + "</td></tr>";
+
                     console.log(`${i + 1}. ${playerName} - Score: ${score}, Completion Time: ${completionTime}`);
                 }
             }
