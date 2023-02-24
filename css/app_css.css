@@ -50,7 +50,7 @@ header {
     margin: 5%;
     background-color: var(--white);
     text-align: center;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1.5;
     padding: 2%;
     border: 1px solid var(--black);
@@ -86,4 +86,81 @@ header {
 #bold_text{
     color: red;
     font-size: 1.5em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-wrapper {
+    margin: 20px 0;
+    width: 70%;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.input {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    font-size: 16px;
+}
+
+.input:focus {
+    outline: none;
+    border-bottom-color: #06c;
+}
+
+button[type="submit"] {
+    background-color: #06c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #038;
+}
+
+.skip_text{
+    color: green;
+}
+
+.leaderboard-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.leaderboard {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.th, .td {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.th {
+    background-color: #ccc;
+    font-weight: bold;
+}
+
+.tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
