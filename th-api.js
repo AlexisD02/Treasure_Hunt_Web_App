@@ -320,6 +320,7 @@ function displayLeaderboard(sessionId) {
                 buttons.innerHTML += "<a onclick=\"select(\'" + sessionId + "\' ,\'" + treasureHuntName + "\')\" class=\"btn\"><b>Play Again</b></a>";
                 thead.innerHTML = "<tr class=\"tr\"><th class=\"th\">Rank</th>" +
                     "<th class=\"th\">Name</th><th class=\"th\">Score</th><th class=\"th\">Completion Time</th></tr>";
+                tbody.innerHTML = "";
                 for (let i = 0; i < leaderboard.length; i++) {
                     const playerName = leaderboard[i].player;
                     const score = leaderboard[i].score;
