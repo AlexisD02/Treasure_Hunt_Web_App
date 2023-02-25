@@ -39,6 +39,7 @@ const messageBox = document.getElementById('message');
 const buttons = document.getElementById('buttons');
 const thead = document.getElementById('thead');
 const tbody = document.getElementById('tbody');
+const title = document.getElementById('logo');
 
 function getChallenges() {
     fetch("https://codecyprus.org/th/api/list")
@@ -60,7 +61,7 @@ function getChallenges() {
                 }
             }
             else {
-                console.log("ERROR");
+                console.log(jsonObject.status);
             }
         });
 }
@@ -83,15 +84,15 @@ function select(uuid, treasureName) {
     buttons.innerHTML = "<a onclick=\"\" class=\"btn\"><b>Enter Code</b></a>";
     messageBox.innerHTML = "<p>We are looking for the '" + treasureName + "' treasure. Now tell us your name and " +
         "email, and we are ready to go!</p>";
-    challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"name\">Name:</label>" +
-        "<input type=\"text\" class=\"input\" id=\"name\" name=\"name\" placeholder=\"Enter your name\" required></br></br>" +
-        "<label for=\"email\">Email:</label><input type=\"email\" class=\"input\" id=\"email\" name=\"email\" placeholder=\"Enter your email\"></div>" +
-        "<button type=\"submit\">Submit</button></form>";
-
+    challengesList.innerHTML = "<form id=\"form\"><h2>Team</h2><br/><div id=\"center\"><label for=\"name\"><b>Name</b></label>" +
+        "<br/><input type=\"text\" class=\"input\" id=\"name\" name=\"name\" placeholder=\"Enter your name\" required><br/><br/>" +
+        "<label for=\"email\"><b>Email</b></label><br/><input type=\"email\" class=\"input\" id=\"email\" name=\"email\" placeholder=\"Enter your email\">" +
+        "<br/><div id=\"error\"></div><button type=\"submit\">Submit</button></div></form>";
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
-    let form = document.getElementById("form");
+    const form = document.getElementById("form");
+    const error = document.getElementById("error");
     form.addEventListener("submit", function start(event) {
         event.preventDefault(); // prevent the form from submitting
 
@@ -111,7 +112,8 @@ function select(uuid, treasureName) {
                     console.log(`Total number of questions: ${numOfQuestions}`);
                     questions(session);
                 } else {
-                    console.log(status);
+                    error.innerHTML = jsonObject.errorMessages[0];
+                    console.log(status, jsonObject.errorMessages[0]);
                 }
             })
             .catch(error => console.error(error));
@@ -132,6 +134,7 @@ function questions(session) {
 
             console.log("Can be Skipped: " + canBeSkipped);
 
+            score(session);
             buttons.innerHTML = "";
             // Call skipQuestion function
             if(canBeSkipped === true) {
@@ -152,35 +155,41 @@ function questions(session) {
 
             console.log("Question-Type: " + questionType);
             if(questionType === "BOOLEAN") {
-                challengesList.innerHTML = "<form id=\"form\"><label for=\"response\">Is it true or false?</label>" +
-                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"true\">True</button>" +
-                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"false\">False</button></form>";
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\">" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'true\')\" class=\"answer\" " +
+                    "name=\"answer\" value=\"true\">True</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'false\')\" class=\"answer\" " +
+                    "name=\"answer\" value=\"false\">False</input></div></form>";
             }
 
             if(questionType === "INTEGER") {
-                challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
                     "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an integer...\" required>" +
-                    "</div><button type=\"submit\">Submit</button></form>";
+                    "</div><button type=\"submit\">Submit</button></div></form>";
             }
 
             if(questionType === "NUMERIC") {
-                challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
                     "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an number...\" step=\"0.01\" required>" +
-                    "</div><button type=\"submit\">Submit</button></form>";
+                    "</div><button type=\"submit\">Submit</button></div></form>";
             }
 
             if(questionType === "MCQ") {
-                challengesList.innerHTML = "<form id=\"form\"><label for=\"response\">Select an option:</label>" +
-                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"A\">A</button>" +
-                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"B\">B</button>" +
-                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"C\">C</button>" +
-                    "<button type=\"submit\" id=\"answer\" name=\"answer\" value=\"D\">D</button></form>";
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><label for=\"response\"></label>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'A\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"A\">A</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'B\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"B\">B</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'C\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"C\">C</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'D\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"D\">D</input></div></form>";
             }
 
             if(questionType === "TEXT") {
-                challengesList.innerHTML = "<form id=\"form\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
                     "<input type=\"text\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Answer here...\" required>" +
-                    "</div><button type=\"submit\">Submit</button></form>";
+                    "</div><button type=\"submit\">Submit</button></div></form>";
             }
 
             console.log("Requires Location?: " + requiresLocation);
@@ -197,11 +206,12 @@ function questions(session) {
             let form = document.getElementById("form");
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // prevent the form from submitting
-                const answer = document.getElementById("answer").value;
-                answerQuestion(session, answer);
+                if(questionType === "INTEGER" || questionType === "NUMERIC" || questionType === "TEXT") {
+                    const answer = document.getElementById("answer").value;
+                    answerQuestion(session, answer);
+                }
             });
 
-            //displayLeaderboard(session); //will be removed
 
         })
         .catch(error => console.error(error)); // Handle any errors
@@ -215,23 +225,21 @@ function answerQuestion(sessionId, answer) {
         .then(jsonObject => {
             const { status, correct, completed, message, scoreAdjustment } = jsonObject;
             if (status === "OK") {
-                if (correct) {
-                    console.log("Correct answer! " + message);
-                    console.log("Score adjustment: " + scoreAdjustment);
-                    //score(sessionId);
-                    questions(sessionId);
-
-                }
-                else {
-                    console.log(message);
-                    console.log("Score adjustment: " + scoreAdjustment);
-                    //score(sessionId);
-                }
-
                 if (completed) {
                     console.log("Congratulations, you have completed the treasure hunt!");
                     displayLeaderboard(sessionId);
                 }
+                else {
+                    if (correct) {
+                        console.log("Correct answer! " + message);
+                        questions(sessionId);
+                    }
+                    else {
+                        console.log(message);
+                    }
+                }
+                console.log("Score adjustment: " + scoreAdjustment);
+                score(sessionId);
             }
             else {
                 console.log(status);
@@ -272,9 +280,15 @@ function skipQuestion(sessionId) {
             const {status, completed, message, scoreAdjustment} = jsonObject;
             if (status === "OK") {
                 console.log("Completed:" + completed);
-                console.log("Message:" + message);
-                console.log("Score-Adjustment: " + scoreAdjustment);
-                questions(sessionId);
+                if (completed) {
+                    console.log("Congratulations, you have completed the treasure hunt!");
+                    displayLeaderboard(sessionId);
+                }
+                else {
+                    console.log("Message:" + message);
+                    console.log("Score-Adjustment: " + scoreAdjustment);
+                    questions(sessionId);
+                }
             }
         })
         .catch(error => console.error(error));
@@ -288,12 +302,13 @@ function score(sessionId) {
     fetch(scoreURL)
         .then(response => response.json())
         .then(jsonObject => {
-            const {status, completed, finished, player, score} = jsonObject;
+            const { status, completed, finished, player, score } = jsonObject;
             if (status === "OK") {
                 console.log("Completed: " + completed);
                 console.log("Finished: " + finished);
                 console.log("Player: " + player);
                 console.log("Score: " + score);
+                title.innerHTML = "Score: " + score;
             }
         })
         .catch(error => console.error(error));
