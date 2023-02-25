@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Testing framework</title>
-    <link rel="stylesheet" href="sample.css"/>
+    <!--<link rel="stylesheet" href="sample.css"/>-->
 </head>
 <body>
 
@@ -29,7 +29,7 @@
 
     <h3>Testing <code>/list</code></h3>
 
-    <button id="buttonTestList" class="button" onclick="handleTestList(this)">Run Test</button>
+    <button id="buttonTestList" class="button" onclick="handleTestList()">Run Test</button>
     <button id="buttonClearList" class="button" onclick="document.getElementById('treasureHunts').innerHTML = 'The results of the test to show up here...';">Clear</button>
 
     <div id="treasureHunts" class="testMessage">
@@ -40,7 +40,7 @@
 
     <h3>Testing <code>/start</code></h3>
 
-    <button id="buttonTestStart" class="button" onclick="handleTestStart(this)">Run Test</button>
+    <button id="buttonTestStart" class="button" onclick="handleTestStart()">Run Test</button>
     <button id="buttonClearStart" class="button" onclick="document.getElementById('message').innerHTML = 'Messages to show up here...'">Clear</button>
 
     <hr>
@@ -51,8 +51,60 @@
 
     <hr>
 
+    <h3>Testing <code>/question</code></h3>
+
+    <button id="buttonTestQuestion" class="button" onclick="handleTestQuestion()">Run Test</button>
+    <button id="buttonClearQuestion" class="button" onclick="document.getElementById('questions').innerHTML = 'Questions to show up here...'">Clear</button>
+
+    <hr>
+
+    <div id="questions" class="errorQuestion">
+        Questions to show up here...
+    </div>
+
+    <hr>
+
+    <h3>Testing <code>/answer</code></h3>
+
+    <button id="buttonTestAnswer" class="button" onclick="handleTestAnswer()">Run Test</button>
+    <button id="buttonClearAnswer" class="button" onclick="document.getElementById('answers').innerHTML = 'Answers to show up here...'">Clear</button>
+
+    <hr>
+
+    <div id="answers" class="errorAnswer">
+        Answers to show up here...
+    </div>
+
+    <hr>
+
+    <h3>Testing <code>/score</code></h3>
+
+    <button id="buttonTestScore" class="button" onclick="handleTestScore()">Run Test</button>
+    <button id="buttonClearScore" class="button" onclick="document.getElementById('score').innerHTML = 'Score to show up here...'">Clear</button>
+
+    <hr>
+
+    <div id="score" class="errorScore">
+        Score to show up here...
+    </div>
+
+    <hr>
+
+    <h3>Testing <code>/leaderboard</code></h3>
+
+    <button id="buttonTestLeaderboard" class="button" onclick="handleTestLeaderboard()">Run Test</button>
+    <button id="buttonClearLeaderboard" class="button" onclick="document.getElementById('leaderboard').innerHTML = 'Leaderboard to show up here...'">Clear</button>
+
+    <hr>
+
+    <div id="leaderboard" class="errorLeaderboard">
+        Leaderboard to show up here...
+    </div>
+
+    <hr>
+
     <!--Load the API JavaScript-->
-    <script src="th-api.js"></script>
+    <!--<script src="th-api.js"></script>-->
     <script src="th-test-api.js"></script>
 
 </body>
