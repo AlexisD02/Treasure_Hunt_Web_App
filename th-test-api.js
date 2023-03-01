@@ -60,21 +60,71 @@ function handleTestStart() {
     handleStart(params, caller, true);*/
 
     let message = document.getElementById("message");
-    const test_startURL = "https://codecyprus.org/th/test-api/start?player=player";
+    const inactive_start = `https://codecyprus.org/th/test-api/start?player=inactive`;
+    const empty_start = `https://codecyprus.org/th/test-api/start?player=empty`;
+    const player_start = `https://codecyprus.org/th/test-api/start?player=player`;
+    const app_start = `https://codecyprus.org/th/test-api/start?player=app`;
+    const unknown_start = `https://codecyprus.org/th/test-api/start?player=unknown`;
+    const missing_start = `https://codecyprus.org/th/test-api/start?player=missing_parameter`;
 
     //console.log(select("werewolf", "sh iii"));
 
-    fetch(test_startURL)
+    fetch(inactive_start)
         .then(response => response.json())
         .then(jsonObject => {
             const { status, errorMessages } = jsonObject;
             if(status === "ERROR") {
-                console.log(errorMessages);
-                console.log(name);
                 message.innerHTML = "<p>" + errorMessages + "</p>";
             }
-            else if (status === "OK") {
-                message.innerHTML = "<p>" + "Name: " + playerName + "</p>"
+        })
+        .catch(error => console.error(error));
+
+    fetch(empty_start)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, errorMessages } = jsonObject;
+            if(status === "ERROR") {
+                message.innerHTML += "<p>" + errorMessages + "</p>";
+            }
+        })
+        .catch(error => console.error(error));
+
+    fetch(player_start)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, errorMessages } = jsonObject;
+            if(status === "ERROR") {
+                message.innerHTML += "<p>" + errorMessages + "</p>";
+            }
+        })
+        .catch(error => console.error(error));
+
+    fetch(app_start)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, errorMessages } = jsonObject;
+            if(status === "ERROR") {
+                message.innerHTML += "<p>" + errorMessages + "</p>";
+            }
+        })
+        .catch(error => console.error(error));
+
+    fetch(unknown_start)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, errorMessages } = jsonObject;
+            if(status === "ERROR") {
+                message.innerHTML += "<p>" + errorMessages + "</p>";
+            }
+        })
+        .catch(error => console.error(error));
+
+    fetch(missing_start)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, errorMessages } = jsonObject;
+            if(status === "ERROR") {
+                message.innerHTML += "<p>" + errorMessages + "</p>";
             }
         })
         .catch(error => console.error(error));
