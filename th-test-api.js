@@ -8,12 +8,15 @@
    for better understanding visit the link provided in the test.html and hit "Try It" button to view a sample json
  */
 
-function handleTestList() {
+
+
+function handleTestList(table_num) {
     /*handleList(caller, true);*/
 
-    let t_Hunts = document.getElementById("treasureHunts"); // 1. Get the dedicated id from the html file, in this case test.html
+    let t_Hunts = document.getElementById("tH"); // 1. Get the dedicated id from the html file, in this case test.html
 
-    const test_listURL = "https://codecyprus.org/th/test-api/list?number-of-ths=2"; // // 2. Get the appropriate API link
+    const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=${table_num}` // // 2. Get the appropriate API link
+    console.log(test_listURL);
 
     // 3. Fetch then fetch data from the provided API json
     fetch(test_listURL)
@@ -47,14 +50,19 @@ function handleTestList() {
             }
         })
         .catch(error => console.error(error));
+
+
 }
+
 
 function handleTestStart() {
     /*let params = {"player": "INACTIVE"}; // explicitly request an error
     handleStart(params, caller, true);*/
 
     let message = document.getElementById("message");
-    const test_startURL = "https://codecyprus.org/th/test-api/start?player=EMPTY";
+    const test_startURL = "https://codecyprus.org/th/test-api/start?player=player";
+
+    //console.log(select("werewolf", "sh iii"));
 
     fetch(test_startURL)
         .then(response => response.json())
@@ -62,7 +70,11 @@ function handleTestStart() {
             const { status, errorMessages } = jsonObject;
             if(status === "ERROR") {
                 console.log(errorMessages);
+                console.log(name);
                 message.innerHTML = "<p>" + errorMessages + "</p>";
+            }
+            else if (status === "OK") {
+                message.innerHTML = "<p>" + "Name: " + playerName + "</p>"
             }
         })
         .catch(error => console.error(error));
