@@ -10,12 +10,12 @@
 
 
 
-function handleTestList(table_num) {
+function handleTestList() {
     /*handleList(caller, true);*/
 
     let t_Hunts = document.getElementById("tH"); // 1. Get the dedicated id from the html file, in this case test.html
 
-    const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=${table_num}` // // 2. Get the appropriate API link
+    const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=4`; // // 2. Get the appropriate API link
     console.log(test_listURL);
 
     // 3. Fetch then fetch data from the provided API json
@@ -24,24 +24,43 @@ function handleTestList(table_num) {
         .then(jsonObject => {
             const { status, treasureHunts } = jsonObject; // 4. Declare variables for each key in the json file respectively
             if(status === "OK") {
-                t_Hunts.innerHTML = "<p>" + "Treasure Hunts" + "</p>"; // 5. Overwrite the initial text in the html
+                t_Hunts.innerHTML = "<h1>" + "Treasure Hunts" + "</h1>"; // 5. Overwrite the initial text in the html
 
                 // 6. Loop through the array in the json file named treasureHunt and show available key:values
                 for (let i = 0; i < treasureHunts.length; i++) {
-                    let list_t_Hunts = document.createElement("ul");
-                    let treasure_hunt_count = document.createElement("p");
+                    let list_t_Hunts = document.createElement("tr");
+                    list_t_Hunts.style.margin = '8px';
 
-                    treasure_hunt_count.innerHTML = "<p><i>" + "Treasure-Hunt " + (i+1) + ":" + "</i></p>";
+                    let treasure_hunt_count = document.createElement("tr");
+
+                    treasure_hunt_count.innerHTML = "<tr><i>" + "Treasure-Hunt " + (i+1) + ":" + "</i></tr>";
                     list_t_Hunts.appendChild(treasure_hunt_count);
 
                     console.log("Treasure-Hunt " + (i+1) + ":");
                     Object.entries(treasureHunts[i]).forEach(([key, value]) => {
                         console.log(`${key} : ${value}`);
 
-                        let list_key_values = document.createElement("li");
+                        let list_keys = document.createElement("th");
+                        let list_values = document.createElement("td");
 
-                        list_key_values.innerHTML = "<p>" + `${key}` + ":" + `${value}` + "</p>";
-                        list_t_Hunts.appendChild(list_key_values);
+                        //----------------------
+
+                        list_keys.style.padding = '4px';
+                        list_keys.style.verticalAlign = 'top';
+                        list_keys.innerHTML = "<th>" + `${key}` + "</th>";
+
+                        //---------------------
+                        list_values.style.borderTop = '5px solid black';
+                        list_values.style.backgroundColor = 'lightYellow';
+                        list_values.style.padding = '20px';
+                        list_values.style.textAlign = 'center';
+                        list_values.style.whiteSpace = 'nowrap';
+
+                        list_values.innerHTML = "<td>" + `${value}` + "</td>";
+
+                        list_keys.appendChild(list_values);
+
+                        list_t_Hunts.appendChild(list_keys);
                     });
                     console.log('\n');
 
@@ -135,7 +154,7 @@ function handleTestQuestion() {
     handleStart(params, caller, true);*/
 
     let questions = document.getElementById("questions");
-    const test_questionsURL = "https://codecyprus.org/th/test-api/question?completed&question-type=RANDOM&can-be-skipped&requires-location";
+    const test_questionsURL = `https://codecyprus.org/th/test-api/question?completed&question-type=RANDOM&$can-be-skipped&requires-location`;
 
     fetch(test_questionsURL)
         .then(response => response.json())
