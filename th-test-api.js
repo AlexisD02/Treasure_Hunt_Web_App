@@ -15,6 +15,11 @@ function handleTestList() {
 
     let t_Hunts = document.getElementById("tH"); // 1. Get the dedicated id from the html file, in this case test.html
 
+
+    /*let th_table = document.createElement("table");
+    let th_head = document.createElement("thead");
+    let th_body = document.createElement("tbody");*/
+
     const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=4`; // // 2. Get the appropriate API link
     console.log(test_listURL);
 
@@ -24,48 +29,52 @@ function handleTestList() {
         .then(jsonObject => {
             const { status, treasureHunts } = jsonObject; // 4. Declare variables for each key in the json file respectively
             if(status === "OK") {
-                t_Hunts.innerHTML = "<h1>" + "Treasure Hunts" + "</h1>"; // 5. Overwrite the initial text in the html
+                t_Hunts.innerHTML = "<h2>" + "Treasure Hunts" + "</h2>"; // 5. Overwrite the initial text in the html
 
-                // 6. Loop through the array in the json file named treasureHunt and show available key:values
-                for (let i = 0; i < treasureHunts.length; i++) {
-                    let list_t_Hunts = document.createElement("tr");
-                    list_t_Hunts.style.margin = '8px';
+                let th_counter = 1;
 
-                    let treasure_hunt_count = document.createElement("tr");
+                let table = document.createElement('table');
+                let thead = document.createElement('thead');
+                let tbody = document.createElement('tbody');
 
-                    treasure_hunt_count.innerHTML = "<tr><i>" + "Treasure-Hunt " + (i+1) + ":" + "</i></tr>";
-                    list_t_Hunts.appendChild(treasure_hunt_count);
+                // create header row
+                let headerRow = document.createElement('tr');
 
-                    console.log("Treasure-Hunt " + (i+1) + ":");
-                    Object.entries(treasureHunts[i]).forEach(([key, value]) => {
-                        console.log(`${key} : ${value}`);
+                Object.keys(treasureHunts[0]).forEach(key => {
+                    let th = document.createElement('th');
 
-                        let list_keys = document.createElement("th");
-                        let list_values = document.createElement("td");
+                    th.innerHTML = key;
 
-                        //----------------------
+                    headerRow.appendChild(th);
+                });
 
-                        list_keys.style.padding = '4px';
-                        list_keys.style.verticalAlign = 'top';
-                        list_keys.innerHTML = "<th>" + `${key}` + "</th>";
+                let test_h = document.createElement('th');
+                test_h.innerHTML = 'Test';
+                headerRow.appendChild(test_h);
 
-                        //---------------------
-                        list_values.style.borderTop = '5px solid black';
-                        list_values.style.backgroundColor = 'lightYellow';
-                        list_values.style.padding = '20px';
-                        list_values.style.textAlign = 'center';
-                        list_values.style.whiteSpace = 'nowrap';
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
 
-                        list_values.innerHTML = "<td>" + `${value}` + "</td>";
+                // create data rows
+                treasureHunts.forEach(data => {
+                    let row = document.createElement('tr');
+                    let test_d = document.createElement('td');
 
-                        list_keys.appendChild(list_values);
+                    Object.values(data).forEach(value => {
+                        let td = document.createElement('td');
 
-                        list_t_Hunts.appendChild(list_keys);
+                        td.innerHTML = value;
+                        row.appendChild(td);
                     });
-                    console.log('\n');
+                    test_d.innerHTML = "<img src='" + (status ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                    row.appendChild(test_d);
 
-                    t_Hunts.appendChild(list_t_Hunts);
-                }
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(tbody);
+
+                t_Hunts.appendChild(table);
             }
         })
         .catch(error => console.error(error));
