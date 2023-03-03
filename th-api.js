@@ -350,6 +350,7 @@ function displayLeaderboard(sessionId) {
                 console.log("Leaderboard:");
                 messageBox.innerHTML = "<p><b>Scoreboard</b></p>";
                 challengesList.innerHTML = "";
+                answerQuestionMessage.innerHTML = "";
                 buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
                 buttons.innerHTML += "<a onclick=\"select(\'" + sessionId + "\' ,\'" + treasureHuntName + "\')\" class=\"btn\"><b>Play Again</b></a>";
                 thead.innerHTML = "<tr class=\"tr\"><th class=\"th\">Rank</th>" +
