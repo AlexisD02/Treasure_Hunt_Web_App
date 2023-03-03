@@ -35,6 +35,7 @@ const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the test API base 
 }*/
 
 const challengesList = document.getElementById('treasureHunts');
+const answerQuestionMessage = document.getElementById('answerQuestionMessage');
 const messageBox = document.getElementById('message');
 const buttons = document.getElementById('buttons');
 const thead = document.getElementById('thead');
@@ -46,17 +47,30 @@ function getChallenges() {
         .then(response => response.json()) //Parse JSON text to JavaScript object
         .then(jsonObject => {
             challengesList.innerText = "Loaded!";
+            const { status, treasureHunts } = jsonObject;
             if (jsonObject.status === "OK") {
-                const treasureHuntsArray = jsonObject.treasureHunts;
-                console.log(treasureHuntsArray);
-                for (let i = 0; i < treasureHuntsArray.length; i++) {
+                console.log(treasureHunts);
+                const currentDateTime = new Date(); // Create a new Date object representing the current date and time
+                console.log(currentDateTime.toLocaleString());
+                for (let i = 0; i < treasureHunts.length; i++) {
+                    const { endsOn, startsOn, uuid, name, description } = treasureHunts[i];
+                    const timeLeftToEnd = new Date(endsOn).toLocaleString();
+                    const timeLeftToStart = new Date(startsOn).toLocaleString();
                     let listHtml = "<ul class='lists'>";
-                    const weeks_left = Math.floor(treasureHuntsArray[i].endsOn / 604800); // from sec to weeks
-                    listHtml += "<button class='list' onclick=\"select(\'" + treasureHuntsArray[i].uuid + "\', \'" + treasureHuntsArray[i].name + "\')\"><li>" + // each treasure hunt item is shown with an individual DIV element
-                        "<b id='bold_text'>" + treasureHuntsArray[i].name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
-                        "<i>" + treasureHuntsArray[i].description + "</i><br/>" + // and the description in italics in the following line
-                        "Ends in: " + weeks_left + " weeks</li></button>";// and the description in italics in the following lin
-                    listHtml += "</ul>";
+                    if(currentDateTime.getTime() >= startsOn && currentDateTime.getTime() <= endsOn) {
+                        listHtml += "<button class='list' onclick=\"select(\'" + uuid + "\', \'" + name + "\')\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                            "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
+                            "<i>" + description + "</i><br/>" + // and the description in italics in the following line
+                            "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
+                        listHtml += "</ul>";
+                    }
+                    if(currentDateTime.getTime() < startsOn){
+                        listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                            "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
+                            "<i>" + description + "</i><br/>" + // and the description in italics in the following line
+                            "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
+                        listHtml += "</ul>";
+                    }
                     challengesList.innerHTML += listHtml;
                 }
             }
@@ -152,6 +166,7 @@ function questions(session) {
                 messageBox.innerHTML += "<p class=\"skip_text\">Cannot be skipped!</p>";
             }
 
+            answerQuestionMessage.innerHTML = "";
 
             console.log("Question-Type: " + questionType);
             if(questionType === "BOOLEAN") {
@@ -203,6 +218,7 @@ function questions(session) {
             console.log("Score if wrong answer: " + wrongScore);
             console.log("Score if skip to answer: " + skipScore);
 
+
             let form = document.getElementById("form");
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // prevent the form from submitting
@@ -232,10 +248,12 @@ function answerQuestion(sessionId, answer) {
                 else {
                     if (correct) {
                         console.log("Correct answer! " + message);
+                        answerQuestionMessage.innerHTML = "<p style='color: green'>Correct answer! " + message + "</p>";
                         questions(sessionId);
                     }
                     else {
                         console.log(message);
+                        answerQuestionMessage.innerHTML = "<p style='color: red'>" + message + "</p>";
                     }
                 }
                 console.log("Score adjustment: " + scoreAdjustment);
@@ -271,27 +289,28 @@ function getLocation(sessionId) {
 // Skip question function
 function skipQuestion(sessionId) {
 
-    const skipURL = `https://codecyprus.org/th/api/skip?session=${sessionId}`;
+    if(confirm("Are you sure you want to skip the current question?")) {
+        const skipURL = `https://codecyprus.org/th/api/skip?session=${sessionId}`;
 
-    console.log("\n");
-    fetch(skipURL)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const {status, completed, message, scoreAdjustment} = jsonObject;
-            if (status === "OK") {
-                console.log("Completed:" + completed);
-                if (completed) {
-                    console.log("Congratulations, you have completed the treasure hunt!");
-                    displayLeaderboard(sessionId);
+        console.log("\n");
+        fetch(skipURL)
+            .then(response => response.json())
+            .then(jsonObject => {
+                const {status, completed, message, scoreAdjustment} = jsonObject;
+                if (status === "OK") {
+                    console.log("Completed:" + completed);
+                    if (completed) {
+                        console.log("Congratulations, you have completed the treasure hunt!");
+                        displayLeaderboard(sessionId);
+                    } else {
+                        console.log("Message:" + message);
+                        console.log("Score-Adjustment: " + scoreAdjustment);
+                        questions(sessionId);
+                    }
                 }
-                else {
-                    console.log("Message:" + message);
-                    console.log("Score-Adjustment: " + scoreAdjustment);
-                    questions(sessionId);
-                }
-            }
-        })
-        .catch(error => console.error(error));
+            })
+            .catch(error => console.error(error));
+    }
 }
 
 function score(sessionId) {
@@ -337,13 +356,12 @@ function displayLeaderboard(sessionId) {
                     "<th class=\"th\">Name</th><th class=\"th\">Score</th><th class=\"th\">Completion Time</th></tr>";
                 tbody.innerHTML = "";
                 for (let i = 0; i < leaderboard.length; i++) {
-                    const playerName = leaderboard[i].player;
-                    const score = leaderboard[i].score;
-                    const completionTime = leaderboard[i].completionTime === 0 ? "Unfinished" : new Date(leaderboard[i].completionTime).toLocaleString();
-                    tbody.innerHTML += "<tr class=\"tr\"><td class=\"td\">" + (i + 1) + "</td><td class=\"td\">" + playerName + "</td>" +
-                        "<td class=\"td\">" + score + "</td><td class=\"td\">" + completionTime + "</td></tr>";
+                    const { player, score, completionTime } = leaderboard[i];
+                    const completionTimeDate = completionTime === 0 ? "Unfinished" : new Date(completionTime).toLocaleString();
+                    tbody.innerHTML += "<tr class=\"tr\"><td class=\"td\">" + (i + 1) + "</td><td class=\"td\">" + player + "</td>" +
+                        "<td class=\"td\">" + score + "</td><td class=\"td\">" + completionTimeDate + "</td></tr>";
 
-                    console.log(`${i + 1}. ${playerName} - Score: ${score}, Completion Time: ${completionTime}`);
+                    console.log(`${i + 1}. ${player} - Score: ${score}, Completion Time: ${completionTimeDate}`);
                 }
             }
             else {

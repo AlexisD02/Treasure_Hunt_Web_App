@@ -57,6 +57,11 @@ header {
     border-radius: 15px;
 }
 
+#answerQuestionMessage{
+    font-size: larger;
+    margin-top: 2em;
+    text-align: center;
+}
 /* CSS for the lists */
 
 .lists {
@@ -81,6 +86,11 @@ header {
 .list:hover {
     background-color: #ddd;
     color: black;
+}
+
+#disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 #bold_text{
