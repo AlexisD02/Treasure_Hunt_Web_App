@@ -15,12 +15,10 @@ function handleTestList() {
 
     let t_Hunts = document.getElementById("tH"); // 1. Get the dedicated id from the html file, in this case test.html
 
+    const input_number = document.getElementById("input_num").value;
 
-    /*let th_table = document.createElement("table");
-    let th_head = document.createElement("thead");
-    let th_body = document.createElement("tbody");*/
 
-    const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=4`; // // 2. Get the appropriate API link
+    const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=${input_number}`; // // 2. Get the appropriate API link
     console.log(test_listURL);
 
     // 3. Fetch then fetch data from the provided API json
