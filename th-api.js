@@ -1,39 +1,5 @@
 const TH_BASE_URL = "https://codecyprus.org/th/api/"; // the true API base url
 const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the test API base url
-
-/**
- * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
- * processing the result to update the HTML with a bullet list with the treasure hunt names and descriptions. Also,
- * for each treasure hunt in the bullet list, a link is shown to trigger another function, the 'select'.
- * @return {Promise<void>}
- */
-/*async function doList() {
-
-    // call the web service and await for the reply to come back and be converted to JSON
-    const reply = await fetch(TH_BASE_URL + "list");
-    const json = await reply.json();
-
-    // identify the spinner, if available, using the id 'loader'...
-    let spinner = document.getElementById("loader");
-    // .. and stop it (by hiding it)
-    spinner.hidden = true;
-
-    // access the "treasureHunts" array on the reply message
-    let treasureHuntsArray = json.treasureHunts;
-    let listHtml = "<ul>"; // dynamically form the HTML code to display the list of treasure hunts
-    for(let i = 0; i < treasureHuntsArray.length; i++) {
-        listHtml += // each treasure hunt item is shown with an individual DIV element
-            "<li>" +
-            "<b>" + treasureHuntsArray[i].name + "</b><br/>" + // the treasure hunt name is shown in bold...
-            "<i>" + treasureHuntsArray[i].description + "</i><br/>" + // and the description in italics in the following line
-            "<a href=\"javascript:select(\'" + treasureHuntsArray[i].uuid + "\')\">Start</a>" + // and the description in italics in the following line
-            "</li>";
-    }
-    listHtml += "</ul>";
-    // update the DOM with the newly created list
-    document.getElementById("treasureHunts").innerHTML = listHtml;
-}*/
-
 const challengesList = document.getElementById('treasureHunts');
 const answerQuestionMessage = document.getElementById('answerQuestionMessage');
 const messageBox = document.getElementById('message');
@@ -41,14 +7,24 @@ const buttons = document.getElementById('buttons');
 const thead = document.getElementById('thead');
 const tbody = document.getElementById('tbody');
 const title = document.getElementById('logo');
+const previewWrapper = document.getElementById('preview_wrapper');
+const videoElement = document.createElement('video');
+let scanner = null, intervalID;
 
+/**
+ * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
+ * processing the result to update the HTML with a bullet list with the treasure hunt names and descriptions. Also,
+ * for each treasure hunt in the bullet list, a link is shown to trigger another function, the 'select'.
+ */
 function getChallenges() {
-    fetch("https://codecyprus.org/th/api/list")
+    const listUrl = TH_BASE_URL + `list`;
+
+    fetch(listUrl)
         .then(response => response.json()) //Parse JSON text to JavaScript object
         .then(jsonObject => {
             challengesList.innerText = "Loaded!";
             const { status, treasureHunts } = jsonObject;
-            if (jsonObject.status === "OK") {
+            if (status === "OK") {
                 console.log(treasureHunts);
                 const currentDateTime = new Date(); // Create a new Date object representing the current date and time
                 console.log(currentDateTime.toLocaleString());
@@ -62,15 +38,14 @@ function getChallenges() {
                             "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                             "<i>" + description + "</i><br/>" + // and the description in italics in the following line
                             "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
-                        listHtml += "</ul>";
                     }
-                    if(currentDateTime.getTime() < startsOn){
+                    else if(currentDateTime.getTime() < startsOn){
                         listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
                             "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                             "<i>" + description + "</i><br/>" + // and the description in italics in the following line
                             "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
-                        listHtml += "</ul>";
                     }
+                    listHtml += "</ul>";
                     challengesList.innerHTML += listHtml;
                 }
             }
@@ -85,23 +60,17 @@ getChallenges();
 /**
  * This function is called when a particular treasure hunt is selected. This is merely a placeholder as you're expected
  * to realize this function-or an equivalent-to perform the necessary actions after a treasure hunt is selected.
- *
- * @param uuid this is the argument that corresponds to the UUID of the selected treasure hunt.
- * @param treasureName
- * @return {Promise<void>}
  */
 function select(uuid, treasureName) {
-
     console.log("Selected treasure hunt with UUID: " + uuid);
     console.log(treasureName);
 
-    buttons.innerHTML = "<a onclick=\"\" class=\"btn\"><b>Enter Code</b></a>";
-    messageBox.innerHTML = "<p>We are looking for the '" + treasureName + "' treasure. Now tell us your name and " +
-        "email, and we are ready to go!</p>";
-    challengesList.innerHTML = "<form id=\"form\"><h2>Team</h2><br/><div id=\"center\"><label for=\"name\"><b>Name</b></label>" +
-        "<br/><input type=\"text\" class=\"input\" id=\"name\" name=\"name\" placeholder=\"Enter your name\" required><br/><br/>" +
-        "<label for=\"email\"><b>Email</b></label><br/><input type=\"email\" class=\"input\" id=\"email\" name=\"email\" placeholder=\"Enter your email\">" +
-        "<br/><div id=\"error\"></div><button type=\"submit\">Submit</button></div></form>";
+    buttons.innerHTML = "";
+    messageBox.innerHTML = "<p>We are looking for the '" + treasureName + "' treasure. Now tell us your name, " +
+        "and we are ready to go!</p>";
+    challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><label for=\"name\"><b>Name</b></label>" +
+        "<br/><input type=\"text\" class=\"input\" id=\"name\" name=\"name\" placeholder=\"Enter your name\" required><br/>" +
+        "<div id=\"error\"></div><button type=\"submit\">Submit</button></div></form>";
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
@@ -111,11 +80,10 @@ function select(uuid, treasureName) {
         event.preventDefault(); // prevent the form from submitting
 
         const playerName = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
 
         // do something with the name and email values, such as sending them to a server
 
-        const startUrl = `https://codecyprus.org/th/api/start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
+        const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
 
         fetch(startUrl)
             .then(response => response.json())
@@ -137,7 +105,7 @@ function select(uuid, treasureName) {
 function questions(session) {
     // Define the API endpoint URL
 
-    const questionUrl = `https://codecyprus.org/th/api/question?session=${session}`;
+    const questionUrl = TH_BASE_URL + `question?session=${session}`;
 
     // Make a GET request to the API endpoint using fetch()
     fetch(questionUrl)
@@ -155,7 +123,7 @@ function questions(session) {
                 buttons.innerHTML = "<a onclick=\"skipQuestion(\'" + session + "\')\" class=\"btn\"><b>Skip</b></a>";
             }
 
-            buttons.innerHTML += "<a onclick=\"\" class=\"btn\"><b>QR</b></a>";
+            buttons.innerHTML += "<a href=\"#\" class=\"btn\" id=\"qr-button\"><span class=\"material-icons\">qr_code_scanner</span></a>";
             buttons.innerHTML += "<a onclick=\"\" class=\"btn\"><b>Menu</b></a>";
 
             // Log the retrieved question and its details to the console
@@ -210,7 +178,10 @@ function questions(session) {
             console.log("Requires Location?: " + requiresLocation);
             if(requiresLocation === true) {
                 getLocation(session);
-                setInterval(getLocation, 31000, session);
+                intervalID = setInterval(getLocation, 31000, session);
+            }
+            else{
+                clearInterval(intervalID);
             }
 
             console.log("Question index: " + currentQuestionIndex);
@@ -228,13 +199,47 @@ function questions(session) {
                 }
             });
 
+            document.getElementById('qr-button').addEventListener('click', () => {
+                if (scanner) {
+                    scanner.stop();
+                    scanner = null;
+                    previewWrapper.innerHTML = '';
+                    return;
+                }
+
+                function isUrl(content) {
+                    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+                    return urlRegex.test(content);
+                }
+
+                scanner = new Instascan.Scanner({ video: videoElement });
+                scanner.addListener('scan', (content) => {
+                    if (isUrl(content)) {
+                        answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
+                    }
+                    document.getElementById('answer').value = content;
+                    scanner.stop();
+                    scanner = null;
+                    previewWrapper.innerHTML = '';
+                });
+                Instascan.Camera.getCameras().then((cameras) => {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                        previewWrapper.appendChild(videoElement);
+                    } else {
+                        console.error('No cameras found.');
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                });
+            });
 
         })
         .catch(error => console.error(error)); // Handle any errors
 }
 
 function answerQuestion(sessionId, answer) {
-    const answerUrl = `https://codecyprus.org/th/api/answer?session=${sessionId}&answer=${encodeURIComponent(answer)}`;
+    const answerUrl = TH_BASE_URL + `answer?session=${sessionId}&answer=${encodeURIComponent(answer)}`;
 
     fetch(answerUrl)
         .then(response => response.json())
@@ -243,12 +248,18 @@ function answerQuestion(sessionId, answer) {
             if (status === "OK") {
                 if (completed) {
                     console.log("Congratulations, you have completed the treasure hunt!");
+                    clearInterval(intervalID);
                     displayLeaderboard(sessionId);
                 }
                 else {
                     if (correct) {
                         console.log("Correct answer! " + message);
                         answerQuestionMessage.innerHTML = "<p style='color: green'>Correct answer! " + message + "</p>";
+                        if (scanner) {
+                            scanner.stop();
+                            scanner = null;
+                            previewWrapper.innerHTML = '';
+                        }
                         questions(sessionId);
                     }
                     else {
@@ -271,7 +282,7 @@ function getLocation(sessionId) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             const { latitude, longitude } = position.coords;
-            const locationUrl = `https://codecyprus.org/th/api/location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
+            const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
             fetch(locationUrl)
                 .then(response => response.json())
                 .then(jsonObject => {
@@ -290,7 +301,7 @@ function getLocation(sessionId) {
 function skipQuestion(sessionId) {
 
     if(confirm("Are you sure you want to skip the current question?")) {
-        const skipURL = `https://codecyprus.org/th/api/skip?session=${sessionId}`;
+        const skipURL = TH_BASE_URL + `skip?session=${sessionId}`;
 
         console.log("\n");
         fetch(skipURL)
@@ -299,6 +310,11 @@ function skipQuestion(sessionId) {
                 const {status, completed, message, scoreAdjustment} = jsonObject;
                 if (status === "OK") {
                     console.log("Completed:" + completed);
+                    if (scanner) {
+                        scanner.stop();
+                        scanner = null;
+                        previewWrapper.innerHTML = '';
+                    }
                     if (completed) {
                         console.log("Congratulations, you have completed the treasure hunt!");
                         displayLeaderboard(sessionId);
@@ -315,7 +331,7 @@ function skipQuestion(sessionId) {
 
 function score(sessionId) {
 
-    const scoreURL = `https://codecyprus.org/th/api/score?session=${sessionId}`;
+    const scoreURL = TH_BASE_URL + `score?session=${sessionId}`;
 
     console.log("Score-section\n");
     fetch(scoreURL)
@@ -335,7 +351,7 @@ function score(sessionId) {
 
 function displayLeaderboard(sessionId) {
 
-    const leaderboardURL = `https://codecyprus.org/th/api/leaderboard?session=${sessionId}&sorted&limit=10`;
+    const leaderboardURL = TH_BASE_URL + `leaderboard?session=${sessionId}&sorted&limit=10`;
 
     fetch(leaderboardURL)
         .then(response => response.json())
@@ -352,7 +368,7 @@ function displayLeaderboard(sessionId) {
                 challengesList.innerHTML = "";
                 answerQuestionMessage.innerHTML = "";
                 buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
-                buttons.innerHTML += "<a onclick=\"select(\'" + sessionId + "\' ,\'" + treasureHuntName + "\')\" class=\"btn\"><b>Play Again</b></a>";
+                buttons.innerHTML += "<a onclick=\"location.reload();\" class=\"btn\"><b>Play Again</b></a>";
                 thead.innerHTML = "<tr class=\"tr\"><th class=\"th\">Rank</th>" +
                     "<th class=\"th\">Name</th><th class=\"th\">Score</th><th class=\"th\">Completion Time</th></tr>";
                 tbody.innerHTML = "";

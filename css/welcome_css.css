@@ -9,8 +9,10 @@
     box-sizing: border-box;
 }
 
-body{
+body {
     margin: 0;
+    padding: 0;
+    background-image: url('../images/pixels_square_shape_18461_225x300.jpg');
 }
 
 /* CSS for the header */
@@ -42,7 +44,7 @@ header {
 .welcome-message {
     margin: 25% 5% 25% 5%;
     background-color: var(--white);
-    text-align: center;
+    text-align: justify;
     font-size: 24px;
     line-height: 1.5;
     padding: 5%;
@@ -84,11 +86,59 @@ a:hover {
     cursor: pointer;
 }
 
+.social-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0077B5; /* Blue for LinkedIn */
+    color: #fff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.social-icons a:hover {
+    background-color: #005C9E;
+    transform: scale(1.2);
+}
+
+.social-icons .fa-brands fa-twitter {
+    background-color: #1DA1F2; /* Blue for Twitter */
+}
+
+.social-icons .fa-facebook-f {
+    background-color: #3B5998; /* Blue for Facebook */
+}
+
+.footer {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--black);
+    background-color: var(--light_gray);
+    padding: 10px;
+    margin-top: 2em;
+}
+
 @media only screen and (min-width: 600px) {
     .welcome-message {
         margin: 5%;
     }
     .next-button{
         padding: 2%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .welcome-message {
+        font-size: 20px;
     }
 }

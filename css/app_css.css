@@ -9,8 +9,10 @@
     box-sizing: border-box;
 }
 
-body{
+body {
     margin: 0;
+    padding: 0;
+    background-image: url('../images/pixels_square_shape_18461_225x300.jpg');
 }
 
 /* CSS for the header */
@@ -49,10 +51,10 @@ header {
 .message {
     margin: 5%;
     background-color: var(--white);
-    text-align: center;
+    text-align: left;
     font-size: 20px;
     line-height: 1.5;
-    padding: 2%;
+    padding: 2% 5%;
     border: 1px solid var(--black);
     border-radius: 15px;
 }
@@ -183,4 +185,21 @@ label {
 
 .tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+.material-icons{
+    vertical-align: middle;
+    color: black;
+    font-size: 20em;
+}
+
+#preview_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#preview_wrapper video {
+    width: 90%;
+    height: auto;
 }
