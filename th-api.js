@@ -402,6 +402,12 @@ function displayLeaderboard(sessionId) {
                 buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
                 buttons.innerHTML += "<a onclick=\"location.reload();\" class=\"btn\"><b>Play Again</b></a>";
 
+                if (scanner) {
+                    scanner.stop();
+                    scanner = null;
+                    previewWrapper.innerHTML = '';
+                }
+
                 // add event listener to show map button
                 document.getElementById("map").style.display = "block";
                 if (locationArray.length > 0) {
