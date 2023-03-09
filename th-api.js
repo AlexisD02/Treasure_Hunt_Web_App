@@ -9,7 +9,7 @@ const tbody = document.getElementById('tbody');
 const title = document.getElementById('logo');
 const previewWrapper = document.getElementById('preview_wrapper');
 const videoElement = document.createElement('video');
-let scanner = null, intervalID;
+let scanner = null, intervalID, map, locationArray = [];
 
 /**
  * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
@@ -178,7 +178,7 @@ function questions(session) {
             console.log("Requires Location?: " + requiresLocation);
             if(requiresLocation === true) {
                 getLocation(session);
-                intervalID = setInterval(getLocation, 31000, session);
+                intervalID = setInterval(() => { getLocation(session); }, 31000);
             }
             else{
                 clearInterval(intervalID);
@@ -277,11 +277,44 @@ function answerQuestion(sessionId, answer) {
         .catch(error => console.error(error));
 }
 
+/*
+*To add the location updates to the minimap using Leaflet library, you can follow these steps:
+
+* Define a global variable map to store the map object and initialize it in the initMap() function only if it is undefined.
+* Define a global variable locationArray to store the locations visited by the user.
+* In the getLocation() function, push the new location to the locationArray and call the updateMap()
+* function to add the location to the minimap.
+* Define the updateMap() function to draw the path between the locations and update the map with markers and the path.
+* In the initMap() function, initialize the map and add the path layer to it.
+
+*/
+function initMap() {
+    if (!map) {
+        map = L.map('map').setView([0, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            maxZoom: 18
+        }).addTo(map);
+    }
+
+    const pathLayer = L.polyline(locationArray, {color: 'red'}).addTo(map);
+    map.fitBounds(pathLayer.getBounds());
+
+    locationArray.forEach(location => {
+        const marker = L.marker(location).addTo(map);
+    });
+}
+
+// hide the map initially
+document.getElementById("map").style.display = 'none';
+
+
 // Get location
 function getLocation(sessionId) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             const { latitude, longitude } = position.coords;
+            locationArray.push([latitude, longitude]);
             const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
             fetch(locationUrl)
                 .then(response => response.json())
@@ -291,8 +324,7 @@ function getLocation(sessionId) {
                 })
                 .catch(error => console.error(error));
         });
-    }
-    else {
+    } else {
         console.error("Geolocation is not supported by your browser.");
     }
 }
@@ -369,6 +401,13 @@ function displayLeaderboard(sessionId) {
                 answerQuestionMessage.innerHTML = "";
                 buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
                 buttons.innerHTML += "<a onclick=\"location.reload();\" class=\"btn\"><b>Play Again</b></a>";
+
+                // add event listener to show map button
+                document.getElementById("map").style.display = "block";
+                if (locationArray.length > 0) {
+                    initMap();
+                }
+
                 thead.innerHTML = "<tr class=\"tr\"><th class=\"th\">Rank</th>" +
                     "<th class=\"th\">Name</th><th class=\"th\">Score</th><th class=\"th\">Completion Time</th></tr>";
                 tbody.innerHTML = "";
@@ -387,6 +426,3 @@ function displayLeaderboard(sessionId) {
         })
         .catch(error => console.error(error));
 }
-
-
-
