@@ -201,9 +201,7 @@ function questions(session) {
 
             document.getElementById('qr-button').addEventListener('click', () => {
                 if (scanner) {
-                    scanner.stop();
-                    scanner = null;
-                    previewWrapper.innerHTML = '';
+                    QRScannerStop();
                     return;
                 }
 
@@ -218,9 +216,7 @@ function questions(session) {
                         answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
                     }
                     document.getElementById('answer').value = content;
-                    scanner.stop();
-                    scanner = null;
-                    previewWrapper.innerHTML = '';
+                    QRScannerStop();
                 });
                 Instascan.Camera.getCameras().then((cameras) => {
                     if (cameras.length > 0) {
@@ -236,6 +232,12 @@ function questions(session) {
 
         })
         .catch(error => console.error(error)); // Handle any errors
+}
+
+function QRScannerStop() {
+    scanner.stop();
+    scanner = null;
+    previewWrapper.innerHTML = '';
 }
 
 function answerQuestion(sessionId, answer) {
@@ -255,11 +257,7 @@ function answerQuestion(sessionId, answer) {
                     if (correct) {
                         console.log("Correct answer! " + message);
                         answerQuestionMessage.innerHTML = "<p style='color: green'>Correct answer! " + message + "</p>";
-                        if (scanner) {
-                            scanner.stop();
-                            scanner = null;
-                            previewWrapper.innerHTML = '';
-                        }
+
                         questions(sessionId);
                     }
                     else {
@@ -300,13 +298,16 @@ function initMap() {
     const pathLayer = L.polyline(locationArray, {color: 'red'}).addTo(map);
     map.fitBounds(pathLayer.getBounds());
 
-    locationArray.forEach(location => {
+    locationArray.forEach((location, index) => {
         const marker = L.marker(location).addTo(map);
+        marker.bindTooltip(`Location ${index+1}`, {permanent: true, direction: 'top', offset: [-14, -10]});
+        // display the label permanently at the top of the marker with a 14 pixel leftward and 10 pixel upward offset.
     });
 }
 
+
 // hide the map initially
-document.getElementById("map").style.display = 'none';
+document.getElementById("map").style.display = "none";
 
 
 // Get location
@@ -343,9 +344,7 @@ function skipQuestion(sessionId) {
                 if (status === "OK") {
                     console.log("Completed:" + completed);
                     if (scanner) {
-                        scanner.stop();
-                        scanner = null;
-                        previewWrapper.innerHTML = '';
+                        QRScannerStop();
                     }
                     if (completed) {
                         console.log("Congratulations, you have completed the treasure hunt!");
@@ -403,9 +402,7 @@ function displayLeaderboard(sessionId) {
                 buttons.innerHTML += "<a onclick=\"location.reload();\" class=\"btn\"><b>Play Again</b></a>";
 
                 if (scanner) {
-                    scanner.stop();
-                    scanner = null;
-                    previewWrapper.innerHTML = '';
+                    QRScannerStop();
                 }
 
                 // add event listener to show map button

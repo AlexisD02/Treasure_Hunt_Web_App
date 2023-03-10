@@ -168,7 +168,7 @@ label {
 }
 
 .leaderboard {
-    margin: 30px auto auto auto;
+    margin: auto;
     width: 90%;
     border-collapse: collapse;
 }
@@ -207,5 +207,14 @@ label {
 #map {
     width: 90%;
     height: 300px;
-    margin: auto;
+    margin: 30px auto 30px auto;
 }
+
+.my-label {
+    font-size: 12px; /* font size */
+    padding: 4px 8px; /* padding */
+    border-radius: 8px; /* rounded corners */
+    opacity: 0.5; /* opacity */
+    border: 2px solid #ffffff; /* white border */
+}
+
