@@ -144,9 +144,9 @@ a:hover {
 }
 
 @media (display-mode: standalone) {
-    /* CSS styles for the app when launched from the home screen */
-    .my-icon {
-        background-color: #000000;
-        color: white;
+    body {
+        background-color: #f0f0f0;
+        font-weight: bold;
     }
 }
+
