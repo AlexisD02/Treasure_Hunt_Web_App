@@ -143,10 +143,4 @@ a:hover {
     }
 }
 
-@media (display-mode: standalone) {
-    body {
-        background-color: #f0f0f0;
-        font-weight: bold;
-    }
-}
 
