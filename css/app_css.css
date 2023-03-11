@@ -202,6 +202,7 @@ label {
 #preview_wrapper video {
     width: 90%;
     height: auto;
+    transform: scaleX(-1);
 }
 
 #map {
