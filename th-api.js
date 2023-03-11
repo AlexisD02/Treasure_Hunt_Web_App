@@ -202,7 +202,7 @@ function questions(session) {
                 }
             });
 
-            document.getElementById('qr-button').addEventListener('click', () => {
+            document.getElementById("qr-button").addEventListener("click", () => {
                 if (scanner) {
                     QRScannerStop();
                     return;
@@ -217,18 +217,18 @@ function questions(session) {
                                 mirror: !!frontCamera, // flip video horizontally if front camera is used
                             });
                             scanner.start(camera);
-                            scanner.addListener('scan', content => {
+                            scanner.addListener("scan", content => {
                                 if (isUrl(content)) {
                                     answerQuestionMessage.innerHTML = `<a href="${content}" target="_blank">Click to view</a>`;
                                 }
-                                document.getElementById('answer').value = content;
+                                document.getElementById("answer").value = content;
                                 QRScannerStop();
                             });
                             previewWrapper.appendChild(videoElement);
                         }
                         else {
-                            console.error('No cameras found.');
-                            alert("No camera found.")
+                            console.error("No cameras found");
+                            alert("No cameras found")
                         }
                     })
                     .catch(error => {
