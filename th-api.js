@@ -11,6 +11,9 @@ const previewWrapper = document.getElementById('preview_wrapper');
 const videoElement = document.createElement('video');
 let scanner = null, intervalID, map, locationArray = [];
 
+
+const isUrl = content => /^(ftp|http|https):\/\/[^ "]+$/.test(content);
+
 /**
  * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
  * processing the result to update the HTML with a bullet list with the treasure hunt names and descriptions. Also,
@@ -205,44 +208,34 @@ function questions(session) {
                     return;
                 }
 
-                function isUrl(content) {
-                    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-                    return urlRegex.test(content);
-                }
-
-                scanner = new Instascan.Scanner({ video: videoElement });
-                scanner.addListener('scan', (content) => {
-                    if (isUrl(content)) {
-                        answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
-                    }
-                    document.getElementById('answer').value = content;
-                    QRScannerStop();
-                });
-                Instascan.Camera.getCameras().then((cameras) => {
-                    if (cameras.length > 0) {
-                        if (cameras[1]) {
+                Instascan.Camera.getCameras()
+                    .then(([frontCamera, backCamera]) => {
+                        const camera = backCamera || frontCamera;
+                        if (camera) {
                             scanner = new Instascan.Scanner({
                                 video: videoElement,
-                                mirror: false // flip video horizontally
+                                mirror: !!frontCamera, // flip video horizontally if front camera is used
                             });
-                            scanner.start(cameras[1]);
+                            scanner.start(camera);
+                            scanner.addListener('scan', content => {
+                                if (isUrl(content)) {
+                                    answerQuestionMessage.innerHTML = `<a href="${content}" target="_blank">Click to view</a>`;
+                                }
+                                document.getElementById('answer').value = content;
+                                QRScannerStop();
+                            });
+                            previewWrapper.appendChild(videoElement);
                         }
                         else {
-                            scanner = new Instascan.Scanner({
-                                video: videoElement,
-                                mirror: true // flip video horizontally
-                            });
-                            scanner.start(cameras[0]);
+                            console.error('No cameras found.');
+                            alert("No camera found.")
                         }
-                        previewWrapper.appendChild(videoElement);
-                    }
-                    else {
-                        console.error('No cameras found.');
-                    }
-                }).catch((error) => {
-                    console.error(error);
-                });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             });
+
 
         })
         .catch(error => console.error(error)); // Handle any errors
