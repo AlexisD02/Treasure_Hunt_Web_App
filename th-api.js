@@ -210,7 +210,10 @@ function questions(session) {
                     return urlRegex.test(content);
                 }
 
-                scanner = new Instascan.Scanner({ video: videoElement });
+                scanner = new Instascan.Scanner({
+                    video: videoElement,
+                    mirror: false // flip video horizontally
+                });
                 scanner.addListener('scan', (content) => {
                     if (isUrl(content)) {
                         answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
@@ -223,13 +226,11 @@ function questions(session) {
                     if (cameras.length > 0) {
                         if (cameras[1]) {
                             scanner.start(cameras[1]).then(() => {
-                                videoElement.style.transform = "scaleX(-1)";
                                 previewWrapper.appendChild(videoElement);
                             });
                         }
                         else {
                             scanner.start(cameras[0]).then(() => {
-                                videoElement.style.transform = "scaleX(-1)";
                                 previewWrapper.appendChild(videoElement);
                             });
                         }
@@ -241,6 +242,7 @@ function questions(session) {
                     console.error(error);
                 });
             });
+
 
         })
         .catch(error => console.error(error)); // Handle any errors
