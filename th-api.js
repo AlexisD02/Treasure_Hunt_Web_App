@@ -218,17 +218,23 @@ function questions(session) {
                     document.getElementById('answer').value = content;
                     QRScannerStop();
                 });
+
                 Instascan.Camera.getCameras().then((cameras) => {
-                    if (cameras.length > 0) {
+                    const rearCamera = cameras.find(camera => camera.name.toLowerCase().includes('back'));
+                    if (rearCamera) {
+                        scanner.start(rearCamera);
+                    }
+                    else if (cameras.length > 0) {
                         scanner.start(cameras[0]);
-                        previewWrapper.appendChild(videoElement);
-                    } else {
+                    }
+                    else {
                         console.error('No cameras found.');
                     }
                 }).catch((error) => {
                     console.error(error);
                 });
             });
+
 
         })
         .catch(error => console.error(error)); // Handle any errors
