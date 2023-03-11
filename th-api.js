@@ -199,42 +199,37 @@ function questions(session) {
                 }
             });
 
-            document.getElementById('qr-button').addEventListener('click', () => {
-                if (scanner) {
-                    QRScannerStop();
-                    return;
+            scanner = new Instascan.Scanner({ video: videoElement });
+            scanner.addListener('scan', (content) => {
+                if (isUrl(content)) {
+                    answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
                 }
+                document.getElementById('answer').value = content;
+                QRScannerStop();
+            });
 
-                function isUrl(content) {
-                    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-                    return urlRegex.test(content);
-                }
-
-                scanner = new Instascan.Scanner({ video: videoElement, facingMode: { exact: 'environment' } });
-                scanner.addListener('scan', (content) => {
-                    if (isUrl(content)) {
-                        answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
-                    }
-                    document.getElementById('answer').value = content;
-                    QRScannerStop();
-                });
-                Instascan.Camera.getCameras().then((cameras) => {
-                    if (cameras.length > 0) {
-                        if (cameras[1]) {
-                            scanner.start(cameras[1]);
-                        }
-                        else {
-                            scanner.start(cameras[0]);
-                        }
-                        previewWrapper.appendChild(videoElement);
+            Instascan.Camera.getCameras().then((cameras) => {
+                if (cameras.length > 0) {
+                    if (cameras[1]) {
+                        scanner.start(cameras[1]).then(() => {
+                            videoElement.style.transform = "scaleX(-1)";
+                            previewWrapper.appendChild(videoElement);
+                        });
                     }
                     else {
-                        console.error('No cameras found.');
+                        scanner.start(cameras[0]).then(() => {
+                            videoElement.style.transform = "scaleX(-1)";
+                            previewWrapper.appendChild(videoElement);
+                        });
                     }
-                }).catch((error) => {
-                    console.error(error);
-                });
+                }
+                else {
+                    console.error('No cameras found.');
+                }
+            }).catch((error) => {
+                console.error(error);
             });
+
 
         })
         .catch(error => console.error(error)); // Handle any errors
