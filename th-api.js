@@ -219,13 +219,18 @@ function questions(session) {
                     QRScannerStop();
                 });
 
+                // Get the rear camera
                 Instascan.Camera.getCameras().then((cameras) => {
-                    const rearCamera = cameras.find(camera => camera.name.toLowerCase().includes('back'));
+                    const rearCamera = cameras.find(camera => camera.facing === 'environment');
                     if (rearCamera) {
+                        // Use the rear camera
                         scanner.start(rearCamera);
+                        previewWrapper.appendChild(videoElement);
                     }
                     else if (cameras.length > 0) {
+                        // Use the first available camera if no rear camera is found
                         scanner.start(cameras[0]);
+                        previewWrapper.appendChild(videoElement);
                     }
                     else {
                         console.error('No cameras found.');
