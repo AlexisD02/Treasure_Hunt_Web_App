@@ -210,14 +210,7 @@ function questions(session) {
                     return urlRegex.test(content);
                 }
 
-                scanner = new Instascan.Scanner({
-                    video: {
-                        deviceId: null,
-                        facingMode: { exact: "environment" },
-                        mirror: false,
-                    },
-                });
-
+                scanner = new Instascan.Scanner({ video: videoElement });
                 scanner.addListener('scan', (content) => {
                     if (isUrl(content)) {
                         answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
@@ -225,16 +218,25 @@ function questions(session) {
                     document.getElementById('answer').value = content;
                     QRScannerStop();
                 });
-
                 Instascan.Camera.getCameras().then((cameras) => {
                     if (cameras.length > 0) {
                         if (cameras[1]) {
+                            scanner = new Instascan.Scanner({
+                                video: videoElement,
+                                mirror: false // flip video horizontally
+                            });
                             scanner.start(cameras[1]);
-                        } else {
+                        }
+                        else {
+                            scanner = new Instascan.Scanner({
+                                video: videoElement,
+                                mirror: true // flip video horizontally
+                            });
                             scanner.start(cameras[0]);
                         }
                         previewWrapper.appendChild(videoElement);
-                    } else {
+                    }
+                    else {
                         console.error('No cameras found.');
                     }
                 }).catch((error) => {
