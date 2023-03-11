@@ -211,9 +211,13 @@ function questions(session) {
                 }
 
                 scanner = new Instascan.Scanner({
-                    video: videoElement,
-                    mirror: false // flip video horizontally
+                    video: {
+                        deviceId: null,
+                        facingMode: { exact: "environment" },
+                        mirror: false,
+                    },
                 });
+
                 scanner.addListener('scan', (content) => {
                     if (isUrl(content)) {
                         answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
@@ -225,24 +229,18 @@ function questions(session) {
                 Instascan.Camera.getCameras().then((cameras) => {
                     if (cameras.length > 0) {
                         if (cameras[1]) {
-                            scanner.start(cameras[1]).then(() => {
-                                previewWrapper.appendChild(videoElement);
-                            });
+                            scanner.start(cameras[1]);
+                        } else {
+                            scanner.start(cameras[0]);
                         }
-                        else {
-                            scanner.start(cameras[0]).then(() => {
-                                previewWrapper.appendChild(videoElement);
-                            });
-                        }
-                    }
-                    else {
+                        previewWrapper.appendChild(videoElement);
+                    } else {
                         console.error('No cameras found.');
                     }
                 }).catch((error) => {
                     console.error(error);
                 });
             });
-
 
         })
         .catch(error => console.error(error)); // Handle any errors
