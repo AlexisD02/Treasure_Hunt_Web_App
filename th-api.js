@@ -214,7 +214,7 @@ function questions(session) {
                         if (camera) {
                             scanner = new Instascan.Scanner({
                                 video: videoElement,
-                                mirror: !!frontCamera, // flip video horizontally if front camera is used
+                                mirror: !!camera, // flip video horizontally if front camera is used
                             });
                             scanner.start(camera);
                             scanner.addListener("scan", content => {
@@ -233,6 +233,7 @@ function questions(session) {
                     })
                     .catch(error => {
                         console.error(error);
+                        alert("Failed to get cameras");
                     });
             });
 
