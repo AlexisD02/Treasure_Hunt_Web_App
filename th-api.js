@@ -210,7 +210,7 @@ function questions(session) {
                     return urlRegex.test(content);
                 }
 
-                scanner = new Instascan.Scanner({ video: videoElement });
+                scanner = new Instascan.Scanner({ video: videoElement, facingMode: { exact: 'environment' } });
                 scanner.addListener('scan', (content) => {
                     if (isUrl(content)) {
                         answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
