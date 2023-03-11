@@ -220,14 +220,15 @@ function questions(session) {
                 });
                 Instascan.Camera.getCameras().then((cameras) => {
                     if (cameras.length > 0) {
-                        const backCamera = Instascan.Camera.getBackVideoCamera(cameras);
-                        if (backCamera) {
-                            scanner.start(backCamera);
-                        } else {
+                        if (cameras[1]) {
+                            scanner.start(cameras[1]);
+                        }
+                        else {
                             scanner.start(cameras[0]);
                         }
                         previewWrapper.appendChild(videoElement);
-                    } else {
+                    }
+                    else {
                         console.error('No cameras found.');
                     }
                 }).catch((error) => {
