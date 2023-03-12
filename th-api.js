@@ -283,7 +283,9 @@ function answerQuestion(sessionId, answer) {
                     if (correct) {
                         console.log("Correct answer! " + message);
                         answerQuestionMessage.innerHTML = "<p style='color: green'>Correct answer! " + message + "</p>";
-
+                        if (scanner) {
+                            QRScannerStop();
+                        }
                         questions(sessionId);
                     }
                     else {

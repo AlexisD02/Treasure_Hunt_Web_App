@@ -242,6 +242,7 @@ label {
     height: 50px;
     font-size: 25px;
     padding: 10px;
+    border-radius: 10px;
     text-decoration: none;
     transition: all 0.2s ease-in-out;
 }
