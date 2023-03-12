@@ -1,5 +1,7 @@
 const TH_BASE_URL = "https://codecyprus.org/th/api/"; // the true API base url
 const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the test API base url
+const url = "https://alexisd02.github.io/CO1111/"; // Replace with the actual URL
+
 const challengesList = document.getElementById('treasureHunts');
 const answerQuestionMessage = document.getElementById('answerQuestionMessage');
 const messageBox = document.getElementById('message');
@@ -10,8 +12,8 @@ const title = document.getElementById('logo');
 const previewWrapper = document.getElementById('preview_wrapper');
 const postScore = document.getElementById('postScore');
 const videoElement = document.createElement('video');
+
 let scanner = null, intervalID, map, locationArray = [], totalScore = 0;
-const url = "https://alexisd02.github.io/CO1111/"; // Replace with the actual URL
 
 /**
  * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
@@ -63,6 +65,7 @@ getChallenges();
  * This function is called when a particular treasure hunt is selected. This is merely a placeholder as you're expected
  * to realize this function-or an equivalent-to perform the necessary actions after a treasure hunt is selected.
  */
+
 function select(uuid, treasureName) {
     console.log("Selected treasure hunt with UUID: " + uuid);
     console.log(treasureName);
@@ -77,31 +80,33 @@ function select(uuid, treasureName) {
     tbody.innerHTML = "";
 
     const form = document.getElementById("form");
+    form.addEventListener("submit", submitName.bind(null, uuid, treasureName));
+}
+
+function submitName(uuid, treasureName, event) {
+    event.preventDefault(); // prevent the form from submitting
+    const playerName = document.getElementById("name").value;
     const error = document.getElementById("error");
-    form.addEventListener("submit", function start(event) {
-        event.preventDefault(); // prevent the form from submitting
+    start(uuid, treasureName, playerName, error);
+}
 
-        const playerName = document.getElementById("name").value;
+function start(uuid, treasureName, playerName, error) {
+    const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
 
-        // do something with the name and email values, such as sending them to a server
-
-        const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
-
-        fetch(startUrl)
-            .then(response => response.json())
-            .then(jsonObject => {
-                const {status, numOfQuestions, session} = jsonObject;
-                if (status === "OK") {
-                    console.log(`Treasure hunt started with session ID: ${session}`);
-                    console.log(`Total number of questions: ${numOfQuestions}`);
-                    questions(session);
-                } else {
-                    error.innerHTML = jsonObject.errorMessages[0];
-                    console.log(status, jsonObject.errorMessages[0]);
-                }
-            })
-            .catch(error => console.error(error));
-    });
+    fetch(startUrl)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, numOfQuestions, session } = jsonObject;
+            if (status === "OK") {
+                console.log(`Treasure hunt started with session ID: ${session}`);
+                console.log(`Total number of questions: ${numOfQuestions}`);
+                questions(session);
+            } else {
+                error.innerHTML = jsonObject.errorMessages[0];
+                console.log(status, jsonObject.errorMessages[0]);
+            }
+        })
+        .catch(error => console.error(error));
 }
 
 function questions(session) {
@@ -333,21 +338,32 @@ document.getElementById("map").style.display = "none";
 
 // Get location
 function getLocation(sessionId) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            const { latitude, longitude } = position.coords;
-            locationArray.push([latitude, longitude]);
-            const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
-            fetch(locationUrl)
-                .then(response => response.json())
-                .then(jsonObject => {
-                    const { status, message } = jsonObject;
-                    console.log(status, message);
-                })
-                .catch(error => console.error(error));
+    if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then((permission) => {
+            if (permission.state === 'granted') {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const { latitude, longitude } = position.coords;
+                    locationArray.push([latitude, longitude]);
+                    const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
+                    fetch(locationUrl)
+                        .then((response) => response.json())
+                        .then((jsonObject) => {
+                            const { status, message } = jsonObject;
+                            console.log(status, message);
+                        })
+                        .catch((error) => console.error(error));
+                });
+            } else if (permission.state === 'prompt') {
+                console.log('Please enable location services for this app');
+                alert('Please enable location services for this app');
+            } else {
+                console.log('Location services are not available');
+                alert('Location services are not available');
+            }
         });
     } else {
-        console.error("Geolocation is not supported by your browser.");
+        console.error('Geolocation is not supported by your browser.');
+        alert('Geolocation is not supported by your browser');
     }
 }
 
@@ -403,7 +419,7 @@ function score(sessionId) {
                     postScore.innerHTML = "<a id=\"fb\"><i class=\"fa-brands fa-square-facebook\"></i><span>Share</span></a>" +
                         "<a id=\"twitter\"><i class=\"fa-brands fa-square-twitter\"></i><span>Share</span></a>";
 
-                    function shareOnFacebook(){
+                    function shareOnFacebook() {
                         const navUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F%20My%20score%20is%20${score}.`;
                         window.open(navUrl , '_blank');
                     }
@@ -411,7 +427,7 @@ function score(sessionId) {
                     const fb = document.getElementById('fb');
                     fb.addEventListener('click', shareOnFacebook);
 
-                    function shareOnTwitter(){
+                    function shareOnTwitter() {
                         const navUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F%20My%20score%20is%20${score}.`;
                         window.open(navUrl , '_blank');
                     }
