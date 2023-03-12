@@ -337,35 +337,52 @@ document.getElementById("map").style.display = "none";
 
 // Get location
 function getLocation(sessionId) {
-    if (navigator.permissions && navigator.permissions.query) {
-        navigator.permissions.query({ name: 'geolocation' }).then((permission) => {
-            if (permission.state === 'granted') {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const { latitude, longitude } = position.coords;
-                    locationArray.push([latitude, longitude]);
-                    const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
-                    fetch(locationUrl)
-                        .then((response) => response.json())
-                        .then((jsonObject) => {
-                            const { status, message } = jsonObject;
-                            console.log(status, message);
-                        })
-                        .catch((error) => console.error(error));
-                });
-            } else if (permission.state === 'prompt') {
-                console.log('Please enable location services for this app');
-                alert('Please enable location services for this app');
-            } else {
-                console.log('Location services are not available');
-                alert('Location services are not available');
-            }
-        });
-    } else {
+    if (!navigator.permissions || !navigator.permissions.query) {
         console.error('Geolocation is not supported by your browser.');
         alert('Geolocation is not supported by your browser');
+        return;
     }
+
+    navigator.permissions.query({ name: 'geolocation' }).then((permission) => {
+        if (permission.state === 'granted') {
+            getLocationData(sessionId);
+        } else if (permission.state === 'prompt') {
+            console.log('Please enable location services for this app');
+            alert('Please enable location services for this app');
+            navigator.geolocation.getCurrentPosition(
+                () => getLocationData(sessionId),
+                () => {
+                    console.log('User denied location services');
+                    alert('User denied location services');
+                }
+            );
+        } else {
+            console.log('Location services are not available');
+            alert('Location services are not available');
+        }
+    });
 }
 
+function getLocationData(sessionId) {
+    navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        locationArray.push([latitude, longitude]);
+        const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
+        fetch(locationUrl)
+            .then((response) => response.json())
+            .then((jsonObject) => {
+                const { status, message } = jsonObject;
+                console.log(status, message);
+            })
+            .catch((error) => {
+                console.error(error);
+                alert('There was an error getting your location data');
+            });
+    }, (error) => {
+        console.error(error);
+        alert('There was an error getting your location');
+    });
+}
 
 // Skip question function
 function skipQuestion(sessionId) {
