@@ -96,7 +96,6 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #0077B5; /* Blue for LinkedIn */
     color: #fff;
     border-radius: 50%;
     width: 50px;
@@ -106,16 +105,15 @@ a:hover {
     transition: all 0.2s ease-in-out;
 }
 
-.social-icons .fa-brands fa-twitter {
+.social-icons #twitter_icon {
     background-color: #1DA1F2; /* Blue for Twitter */
 }
 
-.social-icons .fab fa-facebook-f {
+.social-icons #fb_icon {
     background-color: #3B5998; /* Blue for Facebook */
 }
 
 .social-icons a:hover {
-    background-color: #005C9E;
     transform: scale(1.2);
 }
 
