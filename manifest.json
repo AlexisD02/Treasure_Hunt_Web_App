@@ -30,7 +30,7 @@
     }
   ],
   "start_url": "https://alexisd02.github.io/CO1111/",
-  "display": "browser",
+  "display": "standalone",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "orientation": "portrait",

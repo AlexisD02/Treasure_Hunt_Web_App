@@ -337,23 +337,35 @@ document.getElementById("map").style.display = "none";
 
 // Get location
 function getLocation(sessionId) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            const { latitude, longitude } = position.coords;
-            locationArray.push([latitude, longitude]);
-            const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
-            fetch(locationUrl)
-                .then(response => response.json())
-                .then(jsonObject => {
-                    const { status, message } = jsonObject;
-                    console.log(status, message);
-                })
-                .catch(error => console.error(error));
+    if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then((permission) => {
+            if (permission.state === 'granted') {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const { latitude, longitude } = position.coords;
+                    locationArray.push([latitude, longitude]);
+                    const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
+                    fetch(locationUrl)
+                        .then((response) => response.json())
+                        .then((jsonObject) => {
+                            const { status, message } = jsonObject;
+                            console.log(status, message);
+                        })
+                        .catch((error) => console.error(error));
+                });
+            } else if (permission.state === 'prompt') {
+                console.log('Please enable location services for this app');
+                alert('Please enable location services for this app');
+            } else {
+                console.log('Location services are not available');
+                alert('Location services are not available');
+            }
         });
     } else {
-        console.error("Geolocation is not supported by your browser.");
+        console.error('Geolocation is not supported by your browser.');
+        alert('Geolocation is not supported by your browser');
     }
 }
+
 
 // Skip question function
 function skipQuestion(sessionId) {
