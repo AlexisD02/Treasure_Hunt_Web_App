@@ -8,6 +8,7 @@ const thead = document.getElementById('thead');
 const tbody = document.getElementById('tbody');
 const title = document.getElementById('logo');
 const previewWrapper = document.getElementById('preview_wrapper');
+const postScore = document.getElementById('postScore');
 const videoElement = document.createElement('video');
 let scanner = null, intervalID, map, locationArray = [], totalScore = 0;
 const url = "https://alexisd02.github.io/CO1111/"; // Replace with the actual URL
@@ -398,6 +399,25 @@ function score(sessionId) {
                 if(completed) {
                     messageBox.innerHTML = "<p style='color: green'>Congratulations! You have completed the treasure " +
                         "hunt with a score of " + score + "/" + totalScore + "</p>";
+
+                    postScore.innerHTML = "<a id=\"fb\"><i class=\"fa-brands fa-square-facebook\"></i><span>Share</span></a>" +
+                        "<a id=\"twitter\"><i class=\"fa-brands fa-square-twitter\"></i><span>Share</span></a>";
+
+                    function shareOnFacebook(){
+                        const navUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F%20My%20score%20is%20${score}.`;
+                        window.open(navUrl , '_blank');
+                    }
+
+                    const fb = document.getElementById('fb');
+                    fb.addEventListener('click', shareOnFacebook);
+
+                    function shareOnTwitter(){
+                        const navUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F%20My%20score%20is%20${score}.`;
+                        window.open(navUrl , '_blank');
+                    }
+
+                    const twitter = document.getElementById('twitter');
+                    twitter.addEventListener('click', shareOnTwitter);
                     totalScore = score;
                 }
             }

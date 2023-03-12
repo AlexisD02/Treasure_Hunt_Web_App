@@ -49,7 +49,7 @@ header {
 
 /* CSS for the message */
 .message {
-    margin: 5%;
+    margin: 4%;
     background-color: var(--white);
     text-align: left;
     font-size: 20px;
@@ -223,6 +223,43 @@ label {
     border-radius: 8px; /* rounded corners */
     opacity: 0.5; /* opacity */
     border: 2px solid #ffffff; /* white border */
+}
+
+
+#postScore {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+}
+
+#postScore a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    width: 130px;
+    height: 50px;
+    font-size: 25px;
+    padding: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+#postScore a i {
+    margin-right: 10px;
+}
+
+#postScore #twitter {
+    background-color: #1DA1F2; /* Blue for Twitter */
+}
+
+#postScore #fb {
+    background-color: #3B5998; /* Blue for Facebook */
+}
+
+#postScore a:hover {
+    transform: scale(1.2);
 }
 
 
