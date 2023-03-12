@@ -9,7 +9,8 @@ const tbody = document.getElementById('tbody');
 const title = document.getElementById('logo');
 const previewWrapper = document.getElementById('preview_wrapper');
 const videoElement = document.createElement('video');
-let scanner = null, intervalID, map, locationArray = [];
+let scanner = null, intervalID, map, locationArray = [], totalScore = 0;
+const url = "https://alexisd02.github.io/CO1111/"; // Replace with the actual URL
 
 /**
  * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
@@ -116,6 +117,7 @@ function questions(session) {
 
             console.log("Can be Skipped: " + canBeSkipped);
 
+            totalScore += correctScore;
             score(session);
             buttons.innerHTML = "";
             // Call skipQuestion function
@@ -230,6 +232,9 @@ function questions(session) {
                             if (isUrl(content)) {
                                 answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
                             }
+                            else {
+                                answerQuestionMessage.innerHTML = "";
+                            }
                             document.getElementById('answer').value = content;
                             QRScannerStop();
                         });
@@ -237,9 +242,11 @@ function questions(session) {
                     }
                     else {
                         console.error('No cameras found.');
+                        alert("No cameras found");
                     }
                 }).catch((error) => {
                     console.error(error);
+                    alert("Camera access has been denied. Please enable your camera or search for a device with a camera.");
                 });
             });
 
@@ -388,6 +395,11 @@ function score(sessionId) {
                 console.log("Player: " + player);
                 console.log("Score: " + score);
                 title.innerHTML = "Score: " + score;
+                if(completed) {
+                    messageBox.innerHTML = "<p style='color: green'>Congratulations! You have completed the treasure " +
+                        "hunt with a score of " + score + "/" + totalScore + "</p>";
+                    totalScore = score;
+                }
             }
         })
         .catch(error => console.error(error));
@@ -408,9 +420,9 @@ function displayLeaderboard(sessionId) {
                 console.log("Limit: " + limit);
                 console.log("Has prize: " + hasPrize);
                 console.log("Leaderboard:");
-                messageBox.innerHTML = "<p><b>Scoreboard</b></p>";
+
                 challengesList.innerHTML = "";
-                answerQuestionMessage.innerHTML = "";
+                answerQuestionMessage.innerHTML = "<b>Scoreboard</b>";
                 buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
                 buttons.innerHTML += "<a onclick=\"location.reload();\" class=\"btn\"><b>Play Again</b></a>";
 
@@ -418,9 +430,9 @@ function displayLeaderboard(sessionId) {
                     QRScannerStop();
                 }
 
-                // add event listener to show map button
-                document.getElementById("map").style.display = "block";
                 if (locationArray.length > 0) {
+                    document.getElementById("mapInfo").innerHTML = "<b>Your path since the beginning of the treasure hunt</b>";
+                    document.getElementById("map").style.display = "block";
                     initMap();
                 }
 

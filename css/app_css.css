@@ -204,10 +204,17 @@ label {
     height: auto;
 }
 
+#mapInfo {
+    font-size: smaller;
+    text-align: center;
+    text-decoration: underline;
+    margin-top: 3em;
+}
+
 #map {
     width: 90%;
     height: 300px;
-    margin: 30px auto 30px auto;
+    margin: 0 auto 30px auto;
 }
 
 .my-label {
@@ -217,4 +224,6 @@ label {
     opacity: 0.5; /* opacity */
     border: 2px solid #ffffff; /* white border */
 }
+
+
 

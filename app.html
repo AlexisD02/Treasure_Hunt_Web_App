@@ -9,6 +9,8 @@
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Add the Font Awesome script to your HTML -->
+    <script src="https://kit.fontawesome.com/3253780193.js" crossorigin="anonymous"></script>
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -16,6 +18,9 @@
     <div class="logo" id="logo">Code Cyprus</div>
     <div id="buttons">
         <a onclick="getChallenges()" class="btn"><b>Refresh</b></a>
+        <a href="fb://facewebmodal/f?href=https://alexisd02.github.io/CO1111/&quote=I%20just%20got%2020%20points!%20Can%20you%20beat%20me%3F">
+        cdc</a>
+
     </div>
 </header>
 
@@ -27,11 +32,13 @@
 
 <div class="lists" id="treasureHunts">Loading...</div>
 
+
 <table class="leaderboard">
     <thead id="thead"></thead>
     <tbody id="tbody"></tbody>
 </table>
 
+<div id="mapInfo"></div>
 <div id="map"></div>
 
 <!--Load the API JavaScript-->
