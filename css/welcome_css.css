@@ -12,7 +12,16 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url('../images/pixels_square_shape_18461_225x300.jpg');
+}
+
+#myVideo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
 }
 
 /* CSS for the header */
@@ -23,6 +32,7 @@ header {
     background-color: var(--light_gray);
     color: var(--white);
     padding: 10px;
+    opacity: 0.7;
 }
 
 .logo {
@@ -43,7 +53,8 @@ header {
 /* CSS for the welcome message */
 .welcome-message {
     margin: 25% 5% 25% 5%;
-    background-color: var(--white);
+    color: var(--black);
+    background-color: rgba(255, 255, 255, 0.9); /* 90% opacity white */
     text-align: justify;
     font-size: 24px;
     line-height: 1.5;
@@ -71,20 +82,16 @@ a:hover {
 
 .next-button {
     font-size: 150%;
-    background-color: transparent;
+    background-color: rgba(244, 81, 30, 0.8);
     color: var(--black);
     padding: 10% 15%;
+    border-radius: 10px;
     border: 2px solid var(--black);
     box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
+    transition: 0.3s;
 }
 
-.btn-next {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-}
+.next-button:hover {opacity: 1}
 
 .social-icons {
     display: flex;
