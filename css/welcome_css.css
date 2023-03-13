@@ -113,6 +113,10 @@ a:hover {
     background-color: #3B5998; /* Blue for Facebook */
 }
 
+.social-icons #instagram_icon {
+    background-color: #4F5BD5; /* Blue for Instagram */
+}
+
 .social-icons a:hover {
     transform: scale(1.2);
 }
