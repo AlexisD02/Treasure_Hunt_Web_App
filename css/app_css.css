@@ -42,7 +42,20 @@ header {
     padding: 8px 16px;
 }
 
-.btn:hover {
+.back_button{
+    width: 100%;
+    background-color: var(--light_gray);
+}
+
+.go_back {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+    color: black;
+    font-weight: bold;
+}
+
+.btn:hover, .go_back:hover {
     background-color: #ddd;
     color: black;
 }
@@ -64,6 +77,29 @@ header {
     margin-top: 2em;
     text-align: center;
 }
+
+.loader {
+    margin: 7em auto auto auto;
+    border: 12px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 12px solid #3498db;
+    width: 80px;
+    height: 80px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* CSS for the lists */
 
 .lists {
@@ -78,7 +114,7 @@ header {
 .list {
     text-align: left;
     border: none;
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.8); /* 90% opacity white */
     padding: 2em 10px;
     width: 100%;
     border-radius: 5px;
@@ -91,7 +127,8 @@ header {
 }
 
 #disabled {
-    opacity: 0.6;
+    background-color: rgba(255, 255, 255, 0.5); /* 90% opacity white */
+    opacity: 0.8;
     cursor: not-allowed;
 }
 

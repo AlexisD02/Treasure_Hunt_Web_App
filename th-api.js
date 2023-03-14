@@ -31,7 +31,7 @@ function getChallenges() {
     fetch(listUrl)
         .then(response => response.json()) //Parse JSON text to JavaScript object
         .then(jsonObject => {
-            challengesList.innerText = "Loaded!";
+            challengesList.innerText = "";
             const { status, treasureHunts } = jsonObject;
             if (status === "OK") {
                 console.log(treasureHunts);
@@ -49,7 +49,7 @@ function getChallenges() {
                             "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
                     }
                     else if(currentDateTime.getTime() < startsOn){
-                        listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                        listHtml += "<button class='list' id=\"disabled\" onclick=\"alert('This treasure hunt has not started yet, but will start soon.')\"><li>" + // each treasure hunt item is shown with an individual DIV element
                             "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                             "<i>" + description + "</i><br/>" + // and the description in italics in the following line
                             "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
