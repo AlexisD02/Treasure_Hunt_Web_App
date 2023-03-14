@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome Website</title>
+  <title>Treasure Hunt App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/welcome_css.css">
   <script src="https://kit.fontawesome.com/3253780193.js" crossorigin="anonymous"></script>
   <link rel="manifest" href="manifest.json">
 </head>
-<body style="background-image: url('images/pixels_square_shape_18461_225x300.jpg')">
+<body>
+
+<video id="myVideo" autoplay muted>
+  <source src="videos/treasure_hunt_background_index.mp4" type="video/mp4" />
+</video>
+
 <div class="welcome-message">
   <p>
     Welcome to our Treasure Hunt web application! Our team has developed a unique online quiz that will challenge
@@ -31,8 +36,8 @@
 
   <p>
     To promote our app, we have created a special landing page that introduces our project and team. We have designed
-    the page in such a way as to promote our application to the general public, with clear information about the application
-    and its features. We have also integrated our social networks such as Twitter and Facebook to reach a wider audience
+    the page in such a way as to promote our application to the public, with clear information about the application
+    and its features. We have also integrated our social networks such as Twitter, Facebook and Instagram to reach a wider audience
     and encourage participation.
   </p>
 
@@ -43,12 +48,47 @@
 
   <p>
     To stay updated, follow us on social media:
-  <div class="social-icons">
-    <a href="https://twitter.com/"><span class="fa-brands fa-twitter"></span></a>
-    <a href="https://www.facebook.com/profile.php?id=100090303857547"><span class="fab fa-facebook-f"></span></a>
-  </div>
   </p>
+  <div class="social-icons">
+    <a id="twitter_icon" href="https://twitter.com/ACI_Group1" target="_blank"><span class="fa-brands fa-twitter"></span></a>
+    <a id="fb_icon" href="https://www.facebook.com/profile.php?id=100090303857547" target="_blank"><span class="fab fa-facebook-f"></span></a>
+    <a id="instagram_icon" href="https://z-p4.www.instagram.com/aci.team.group1/?hl=en-gb" target="_blank"><span class="fa-brands fa-instagram"></span></a>
+  </div>
+
+  <div class="team-members">
+    <h2>Meet Our Team</h2>
+
+    <div class="team-member">
+      <h3>Alexis Demetriou</h3>
+      <p>
+        Team Leader & Full-Stack Developer. Alexis is responsible for the development of the main application using
+        HTML, CSS, and JavaScript. He works closely with Charalampos to ensure that the server and the client-side of
+        the application communicate smoothly.
+      </p>
+    </div>
+
+    <div class="team-member">
+      <h3>Charalampos Nikolaou</h3>
+      <p>
+        Backend Developer. Charalampos is responsible for the server-side of the application. He does the JavaScript
+        coding to ensure that the server is working correctly and all the client-server communication is functioning
+        as expected.
+      </p>
+    </div>
+
+    <div class="team-member">
+      <h3>Ivan Semenov</h3>
+      <p>
+        Marketing Specialist. Ivan is responsible for the promotion and marketing of our Treasure Hunt App. He creates
+        marketing campaigns and strategies, manages our social media accounts, and interacts with users to gather feedback
+        and improve the app's user experience.
+      </p>
+    </div>
+  </div>
+
 </div>
+
+
 
 <div class="next-page">
   <a class="next-button" href="app.html">Let's get started</a>
@@ -58,6 +98,7 @@
   <p>Copyright &copy; 2022-23 Treasure Hunt App</p>
 </footer>
 
+<script src="js/background.js"></script>
 </body>
 </html>
 

@@ -9,30 +9,40 @@
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Add the Font Awesome script to your HTML -->
+    <script src="https://kit.fontawesome.com/3253780193.js" crossorigin="anonymous"></script>
     <link rel="manifest" href="manifest.json">
 </head>
-<body style="background-image: url('images/pixels_square_shape_18461_225x300.jpg')">
+<body>
 <header>
     <div class="logo" id="logo">Code Cyprus</div>
     <div id="buttons">
         <a onclick="getChallenges()" class="btn"><b>Refresh</b></a>
-        <a href="testing_navigator.html" class="btn"><b>Test-Start</b></a>
+
     </div>
 </header>
 
+<div class="back_button">
+    <a href="index.html" class="go_back">&laquo; Back</a>
+</div>
+
 <div class="message" id="message"><p>First select a treasure hunt!</p></div>
+
+<div id="postScore"></div>
 
 <div id="answerQuestionMessage"></div>
 
 <div id="preview_wrapper"></div>
 
-<div class="lists" id="treasureHunts">Loading...</div>
+<div class="lists" id="treasureHunts"><div class="loader"></div></div>
+
 
 <table class="leaderboard">
     <thead id="thead"></thead>
     <tbody id="tbody"></tbody>
 </table>
 
+<div id="mapInfo"></div>
 <div id="map"></div>
 
 <!--Load the API JavaScript-->

@@ -1,7 +1,23 @@
 {
   "name": "Treasure Hunt App",
   "short_name": "Treasure Hunt",
+  "description": "A fun treasure hunting game!",
   "icons": [
+    {
+      "src": "images/icon_72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon_96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon_144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
     {
       "src": "images/icon_192.png",
       "sizes": "192x192",
@@ -15,6 +31,8 @@
   ],
   "start_url": "https://alexisd02.github.io/CO1111/",
   "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff"
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
+  "orientation": "portrait",
+  "lang": "en-US"
 }

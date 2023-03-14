@@ -1,28 +1,37 @@
-const TH_BASE_URL = "https://codecyprus.org/th/api/"; // the true API base url
-const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the test API base url
-const challengesList = document.getElementById('treasureHunts');
-const answerQuestionMessage = document.getElementById('answerQuestionMessage');
-const messageBox = document.getElementById('message');
-const buttons = document.getElementById('buttons');
-const thead = document.getElementById('thead');
-const tbody = document.getElementById('tbody');
-const title = document.getElementById('logo');
-const previewWrapper = document.getElementById('preview_wrapper');
-const videoElement = document.createElement('video');
-let scanner = null, intervalID, map, locationArray = [];
+const TH_BASE_URL = "https://codecyprus.org/th/api/"; // the base URL for the true treasure hunt API
+const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the base URL for the test treasure hunt API
+const url = "https://alexisd02.github.io/CO1111/"; // the URL for a web page
+
+const challengesList = document.getElementById('treasureHunts'); // a reference to an HTML element with an ID of treasureHunts
+const answerQuestionMessage = document.getElementById('answerQuestionMessage'); // a reference to an HTML element with an ID of answerQuestionMessage
+const messageBox = document.getElementById('message'); // a reference to an HTML element with an ID of message
+const buttons = document.getElementById('buttons'); // a reference to an HTML element with an ID of buttons
+const thead = document.getElementById('thead'); // a reference to an HTML element with an ID of thead
+const tbody = document.getElementById('tbody'); // a reference to an HTML element with an ID of tbody
+const title = document.getElementById('logo'); // a reference to an HTML element with an ID of logo
+const previewWrapper = document.getElementById('preview_wrapper'); // a reference to an HTML element with an ID of preview_wrapper
+const postScore = document.getElementById('postScore'); // a reference to an HTML element with an ID of postScore
+
+const videoElement = document.createElement('video'); // an HTML video element created using document.createElement() function
+
+let scanner = null, intervalID, map, locationArray = [], totalScore = 0;
 
 /**
- * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
- * processing the result to update the HTML with a bullet list with the treasure hunt names and descriptions. Also,
- * for each treasure hunt in the bullet list, a link is shown to trigger another function, the 'select'.
+ * The function getChallenges() is an asynchronous function that sends an HTTP GET request to the treasure hunt API at the
+ * URL listUrl and then processes the response using response.json(). If the response status is "OK", the function loops
+ * through the treasureHunts array and creates HTML elements for each treasure hunt, including buttons to select each hunt.
+ * The buttons have an onclick attribute which calls the select() function with the corresponding treasure hunt's UUID
+ * and name as arguments. If the current date and time is before the treasure hunt's startsOn time, the button is disabled
+ * and shows the startsOn time instead of the endsOn time. The HTML elements are added to the challengesList element.
  */
+getChallenges();
 function getChallenges() {
     const listUrl = TH_BASE_URL + `list`;
 
     fetch(listUrl)
         .then(response => response.json()) //Parse JSON text to JavaScript object
         .then(jsonObject => {
-            challengesList.innerText = "Loaded!";
+            challengesList.innerText = "";
             const { status, treasureHunts } = jsonObject;
             if (status === "OK") {
                 console.log(treasureHunts);
@@ -40,7 +49,7 @@ function getChallenges() {
                             "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
                     }
                     else if(currentDateTime.getTime() < startsOn){
-                        listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                        listHtml += "<button class='list' id=\"disabled\" onclick=\"alert('This treasure hunt has not started yet, but will start soon.')\"><li>" + // each treasure hunt item is shown with an individual DIV element
                             "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                             "<i>" + description + "</i><br/>" + // and the description in italics in the following line
                             "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
@@ -55,11 +64,13 @@ function getChallenges() {
         });
 }
 
-getChallenges();
-
 /**
- * This function is called when a particular treasure hunt is selected. This is merely a placeholder as you're expected
- * to realize this function-or an equivalent-to perform the necessary actions after a treasure hunt is selected.
+ * When the select function is called with an uuid and a treasureName argument, it logs a message to the console indicating
+ * that a particular treasure hunt has been selected. Then, it sets the innerHTML of several HTML elements to empty strings,
+ * effectively clearing their content. It sets the messageBox element's innerHTML to a message asking the user to enter
+ * their name to start the game, and it sets the challengesList element's innerHTML to an HTML form containing a single
+ * input field for the user's name. Finally, it adds an event listener to the form's submit button that calls the submitName
+ * function when the button is clicked.
  */
 function select(uuid, treasureName) {
     console.log("Selected treasure hunt with UUID: " + uuid);
@@ -75,31 +86,46 @@ function select(uuid, treasureName) {
     tbody.innerHTML = "";
 
     const form = document.getElementById("form");
+    form.addEventListener("submit", submitName.bind(null, uuid, treasureName));
+}
+
+/**
+ * The submitName function is called when the user submits their name via the form's submit button.
+ * It prevents the form from submitting normally (which would reload the page), retrieves the value of the name input field,
+ * and calls the start function with the uuid, treasureName, playerName, and error arguments.
+ */
+function submitName(uuid, treasureName, event) {
+    event.preventDefault(); // prevent the form from submitting
+    const playerName = document.getElementById("name").value;
     const error = document.getElementById("error");
-    form.addEventListener("submit", function start(event) {
-        event.preventDefault(); // prevent the form from submitting
+    start(uuid, treasureName, playerName, error);
+}
 
-        const playerName = document.getElementById("name").value;
+/**
+ * The start function constructs a URL to start the treasure hunt game by appending various query parameters to a base URL
+ * (TH_BASE_URL). It uses the fetch API to make a GET request to the constructed URL and retrieve a JSON response.
+ * If the response's status field is "OK", the function logs a message indicating that the game has started and the number
+ * of questions to be answered, and calls the questions function to start the first question. If the response's status
+ * field is not "OK", the function logs an error message and displays the first error message in the errorMessages field
+ * of the JSON response in the error element.
+ */
+function start(uuid, treasureName, playerName, error) {
+    const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
 
-        // do something with the name and email values, such as sending them to a server
-
-        const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
-
-        fetch(startUrl)
-            .then(response => response.json())
-            .then(jsonObject => {
-                const {status, numOfQuestions, session} = jsonObject;
-                if (status === "OK") {
-                    console.log(`Treasure hunt started with session ID: ${session}`);
-                    console.log(`Total number of questions: ${numOfQuestions}`);
-                    questions(session);
-                } else {
-                    error.innerHTML = jsonObject.errorMessages[0];
-                    console.log(status, jsonObject.errorMessages[0]);
-                }
-            })
-            .catch(error => console.error(error));
-    });
+    fetch(startUrl)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, numOfQuestions, session } = jsonObject;
+            if (status === "OK") {
+                console.log(`Treasure hunt started with session ID: ${session}`);
+                console.log(`Total number of questions: ${numOfQuestions}`);
+                questions(session);
+            } else {
+                error.innerHTML = jsonObject.errorMessages[0];
+                console.log(status, jsonObject.errorMessages[0]);
+            }
+        })
+        .catch(error => console.error(error));
 }
 
 function questions(session) {
@@ -116,6 +142,7 @@ function questions(session) {
 
             console.log("Can be Skipped: " + canBeSkipped);
 
+            totalScore += correctScore;
             score(session);
             buttons.innerHTML = "";
             // Call skipQuestion function
@@ -199,7 +226,7 @@ function questions(session) {
                 }
             });
 
-            document.getElementById('qr-button').addEventListener('click', () => {
+                document.getElementById('qr-button').addEventListener('click', () => {
                 if (scanner) {
                     QRScannerStop();
                     return;
@@ -210,23 +237,41 @@ function questions(session) {
                     return urlRegex.test(content);
                 }
 
-                scanner = new Instascan.Scanner({ video: videoElement });
-                scanner.addListener('scan', (content) => {
-                    if (isUrl(content)) {
-                        answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
-                    }
-                    document.getElementById('answer').value = content;
-                    QRScannerStop();
-                });
                 Instascan.Camera.getCameras().then((cameras) => {
-                    if (cameras.length > 0) {
-                        scanner.start(cameras[0]);
+                    if (cameras) {
+                        if (cameras[1]) {
+                            scanner = new Instascan.Scanner({
+                                video: videoElement,
+                                mirror: false
+                            });
+                            scanner.start(cameras[1]);
+                        }
+                        else {
+                            scanner = new Instascan.Scanner({
+                                video: videoElement,
+                                mirror: true // flip video horizontally
+                            });
+                            scanner.start(cameras[0]);
+                        }
+                        scanner.addListener('scan', (content) => {
+                            if (isUrl(content)) {
+                                answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
+                            }
+                            else {
+                                answerQuestionMessage.innerHTML = "";
+                            }
+                            document.getElementById('answer').value = content;
+                            QRScannerStop();
+                        });
                         previewWrapper.appendChild(videoElement);
-                    } else {
+                    }
+                    else {
                         console.error('No cameras found.');
+                        alert("No cameras found");
                     }
                 }).catch((error) => {
                     console.error(error);
+                    alert("Camera access has been denied. Please enable your camera or search for a device with a camera.");
                 });
             });
 
@@ -240,6 +285,18 @@ function QRScannerStop() {
     previewWrapper.innerHTML = '';
 }
 
+/**
+ * This code defines a function answerQuestion that takes two arguments: sessionId and answer. This function is used to
+ * answer a question in the treasure hunt game. The fetch function is then used to send a GET request to the answer URL.
+ * The response is then parsed as JSON using the response.json() method. The JSON object is destructured to extract status,
+ * correct, completed, message, and scoreAdjustment properties. If the status property is equal to "OK", the function checks
+ * whether the treasure hunt is completed or not. If the treasure hunt is completed, the function displays a "Congratulations"
+ * message, stops the interval timer, and displays the leaderboard by calling the displayLeaderboard function. Otherwise,
+ * if the answer is correct, the function displays a "Correct answer" message, stops the QR scanner if it is running,
+ * and calls the questions function to get the next question. If the answer is incorrect, the function displays an error message.
+ * In all cases, the function logs the scoreAdjustment to the console and calls the score function to display the current
+ * score for the treasure hunt. If the status property is not equal to "OK", the function logs the status property to the console.
+ */
 function answerQuestion(sessionId, answer) {
     const answerUrl = TH_BASE_URL + `answer?session=${sessionId}&answer=${encodeURIComponent(answer)}`;
 
@@ -257,7 +314,9 @@ function answerQuestion(sessionId, answer) {
                     if (correct) {
                         console.log("Correct answer! " + message);
                         answerQuestionMessage.innerHTML = "<p style='color: green'>Correct answer! " + message + "</p>";
-
+                        if (scanner) {
+                            QRScannerStop();
+                        }
                         questions(sessionId);
                     }
                     else {
@@ -275,16 +334,22 @@ function answerQuestion(sessionId, answer) {
         .catch(error => console.error(error));
 }
 
-/*
-*To add the location updates to the minimap using Leaflet library, you can follow these steps:
-
-* Define a global variable map to store the map object and initialize it in the initMap() function only if it is undefined.
-* Define a global variable locationArray to store the locations visited by the user.
-* In the getLocation() function, push the new location to the locationArray and call the updateMap()
-* function to add the location to the minimap.
-* Define the updateMap() function to draw the path between the locations and update the map with markers and the path.
-* In the initMap() function, initialize the map and add the path layer to it.
-
+/**
+ * The function initMap() initializes and displays a Leaflet map, adds a polyline layer to represent a path, and adds
+ * markers with tooltips for each location in locationArray.
+ * First, the function checks if the map variable is already defined. If it is not, the function initializes the map
+ * variable using Leaflet and sets the initial view to a center point of [0, 0] with a zoom level of 2. Then, a tile layer
+ * from OpenStreetMap is added to the map.
+ * Next, a polyline layer is created using the locationArray parameter, which is an array of coordinates representing
+ * the path to display on the map. The polyline layer is added to the map using Leaflet's addTo() method. The getBounds()
+ * method is called on the polyline layer to fit the map's view to the bounds of the path.
+ * After that, a marker is added to the map for each location in locationArray. The forEach() method is used to iterate
+ * through the array, and for each location, a marker is created using Leaflet's L.marker() method and added to the map
+ * using the addTo() method. A tooltip is then bound to the marker using the bindTooltip() method, displaying the label
+ * "Location" followed by the index of the location in locationArray. The permanent option is set to true so that the
+ * tooltip is always displayed, and the direction option is set to 'top' to display the tooltip above the marker.
+ * Finally, the offset option is set to [-14, -10] to position the tooltip 14 pixels to the left and 10 pixels up from
+ * the top center of the marker.
 */
 function initMap() {
     if (!map) {
@@ -309,28 +374,94 @@ function initMap() {
 // hide the map initially
 document.getElementById("map").style.display = "none";
 
-
-// Get location
+/**
+ * The function getLocation() is responsible for obtaining the user's geolocation data and passing it on to the
+ * getLocationData() function. It first checks if the browser supports geolocation by checking for the
+ * navigator.permissions and navigator.permissions.query properties. If these properties are not available, it logs an
+ * error message and displays an alert to the user. If the browser does support geolocation, it then checks the current
+ * permission state for geolocation using navigator.permissions.query({ name: 'geolocation' }).
+ * If the permission state is already "granted", meaning the user has already given permission for the app to access
+ * their location, it calls getLocationData() directly. If the permission state is "prompt", meaning the user
+ * has not yet decided whether to grant permission, it logs a message and displays an alert to the user requesting that
+ * they enable location services for the app. It then calls navigator.geolocation.getCurrentPosition() to prompt the user
+ * to grant permission. If the user grants permission, it calls getLocationData(); if the user denies permission,
+ * it logs a message and displays an alert to the user. If the permission state is anything other than "granted" or "prompt",
+ * it logs a message and displays an alert to the user stating that location services are not available.
+ */
 function getLocation(sessionId) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            const { latitude, longitude } = position.coords;
-            locationArray.push([latitude, longitude]);
-            const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
-            fetch(locationUrl)
-                .then(response => response.json())
-                .then(jsonObject => {
-                    const { status, message } = jsonObject;
-                    console.log(status, message);
-                })
-                .catch(error => console.error(error));
-        });
-    } else {
-        console.error("Geolocation is not supported by your browser.");
+    if (!navigator.permissions || !navigator.permissions.query) {
+        console.error('Geolocation is not supported by your browser.');
+        alert('Geolocation is not supported by your browser');
+        return;
     }
+
+    navigator.permissions.query({ name: 'geolocation' }).then((permission) => {
+        if (permission.state === 'granted') {
+            getLocationData(sessionId);
+        } else if (permission.state === 'prompt') {
+            console.log('Please enable location services for this app');
+            alert('Please enable location services for this app');
+            navigator.geolocation.getCurrentPosition(
+                () => getLocationData(sessionId),
+                () => {
+                    console.log('User denied location services');
+                    alert('User denied location services');
+                }
+            );
+        } else {
+            console.log('Location services are not available');
+            alert('Location services are not available');
+        }
+    });
 }
 
-// Skip question function
+/**
+ * The function getLocationData() retrieves the current location of the user and sends a request to the server
+ * to update the user's location.
+ * It uses the navigator.geolocation.getCurrentPosition() method to obtain the user's current latitude and longitude
+ * coordinates. It then pushes these coordinates to the locationArray array, which is used to display a path of the user's
+ * location history on the map.
+ * Next, it constructs the locationUrl by concatenating the session ID and the latitude and longitude coordinates of the user,
+ * and sends a fetch() request to the server using this URL. The response from the server is parsed as a JSON object.
+ * If the request is successful, the function logs the status and message from the server's response. If there is an error,
+ * the function logs the error message and displays an alert to the user.
+ * Overall, this function updates the user's location and sends a request to the server to update the user's location data.
+ */
+function getLocationData(sessionId) {
+    navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        locationArray.push([latitude, longitude]);
+        const locationUrl = TH_BASE_URL + `location?session=${sessionId}&latitude=${latitude}&longitude=${longitude}`;
+        fetch(locationUrl)
+            .then((response) => response.json())
+            .then((jsonObject) => {
+                const { status, message } = jsonObject;
+                console.log(status, message);
+            })
+            .catch((error) => {
+                console.error(error);
+                alert('There was an error getting your location data');
+            });
+    }, (error) => {
+        console.error(error);
+        alert('There was an error getting your location');
+    });
+}
+
+/**
+ * The skipQuestion() function prompts the user with a confirmation message and then sends a request to skip the current
+ * question in the treasure hunt game.
+ * First, it displays a confirmation dialog box asking the user if they are sure they want to skip the current question.
+ * If the user confirms, the function constructs a URL to skip the question for the current session by appending the
+ * "sessionId" to the base URL with the skip endpoint. It then uses the fetch() function to send a request to the URL.
+ * The response from the server is then parsed as JSON and the status, completed, message, and scoreAdjustment properties
+ * are extracted from the response object.
+ * If the status property is "OK", the function checks whether the completed property is true. If so, it means that the
+ * user has completed the treasure hunt game and the displayLeaderboard() function is called to display the leaderboard.
+ * If completed is false, the function logs the message and scoreAdjustment to the console and calls the questions()
+ * function to display the next question.
+ * If the user cancels the confirmation dialog box, the function does nothing.
+ */
 function skipQuestion(sessionId) {
 
     if(confirm("Are you sure you want to skip the current question?")) {
@@ -375,6 +506,30 @@ function score(sessionId) {
                 console.log("Player: " + player);
                 console.log("Score: " + score);
                 title.innerHTML = "Score: " + score;
+                if(completed) {
+                    messageBox.innerHTML = "<p style='color: green'>Congratulations! You have completed the treasure " +
+                        "hunt with a score of " + score + "/" + totalScore + "</p>";
+
+                    postScore.innerHTML = "<a id=\"fb\"><i class=\"fa-brands fa-square-facebook\"></i><span>Share</span></a>" +
+                        "<a id=\"twitter\"><i class=\"fa-brands fa-square-twitter\"></i><span>Share</span></a>";
+
+                    function shareOnFacebook() {
+                        const navUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F`;
+                        window.open(navUrl , '_blank');
+                    }
+
+                    const fb = document.getElementById('fb');
+                    fb.addEventListener('click', shareOnFacebook);
+
+                    function shareOnTwitter() {
+                        const navUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=I%20just%20scored%20${score}/${totalScore}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F`;
+                        window.open(navUrl , '_blank');
+                    }
+
+                    const twitter = document.getElementById('twitter');
+                    twitter.addEventListener('click', shareOnTwitter);
+                    totalScore = score;
+                }
             }
         })
         .catch(error => console.error(error));
@@ -395,9 +550,9 @@ function displayLeaderboard(sessionId) {
                 console.log("Limit: " + limit);
                 console.log("Has prize: " + hasPrize);
                 console.log("Leaderboard:");
-                messageBox.innerHTML = "<p><b>Scoreboard</b></p>";
+
                 challengesList.innerHTML = "";
-                answerQuestionMessage.innerHTML = "";
+                answerQuestionMessage.innerHTML = "<b>Scoreboard</b>";
                 buttons.innerHTML = "<a onclick=\"displayLeaderboard(\'" + sessionId + "\')\" class=\"btn\"><b>Reload</b></a>";
                 buttons.innerHTML += "<a onclick=\"location.reload();\" class=\"btn\"><b>Play Again</b></a>";
 
@@ -405,9 +560,9 @@ function displayLeaderboard(sessionId) {
                     QRScannerStop();
                 }
 
-                // add event listener to show map button
-                document.getElementById("map").style.display = "block";
                 if (locationArray.length > 0) {
+                    document.getElementById("mapInfo").innerHTML = "<b>Your path since the beginning of the treasure hunt</b>";
+                    document.getElementById("map").style.display = "block";
                     initMap();
                 }
 

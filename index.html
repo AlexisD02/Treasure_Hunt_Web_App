@@ -2,28 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome Website</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>Treasure Hunt App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/welcome_css.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
+
+<video id="myVideo" autoplay muted>
+    <source src="videos/treasure_hunt_background_index.mp4" type="video/mp4" />
+</video>
+
 <header>
-    <div class="logo">Code Cyprus</div>
+    <div class="logo">ACI Group</div>
     <div>
-        <a href="#" class="btn"><b>Help</b></a>
         <a href="about.html" class="btn"><b>About</b></a>
     </div>
 </header>
 
 <div class="welcome-message">
-    <p>Welcome to Code Cyprus - Treasure Hunts! </p>
-    <p>If you have questions, select the 'Help' menu. When you are ready, click the button below to get started!</p>
+    <h4>Welcome to the ACI Group - Treasure Hunt App!</h4>
+    <p>Click the "About" button to learn more about the application. When you are ready, click the button below to get started!</p>
 </div>
 
 <div class="next-page">
     <a class="next-button" href="app.html">Let's get started</a>
 </div>
+
+<script src="js/background.js"></script>
 </body>
 </html>
 
