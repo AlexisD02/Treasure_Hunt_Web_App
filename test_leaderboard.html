@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Testing framework</title>
+  <link rel="stylesheet" href="css/test_css.css"/>
+</head>
+<body>
+
+
+<h1>Testing Leaderboard page</h1>
+
+<h2>How it works:</h2>
+
+<ul>
+  <li>Enter a number to determine the size of the leaderboard.</li>
+  <li>Check a box to view the testing leaderboard either sorted or not.</li>
+  <li>If both boxes are checked, then by default the Sorting will be set to true</li>
+  <li>Run Test button to show results.</li>
+  <li>Clear button to clear results</li>
+</ul>
+
+<h2>Unit Tests</h2>
+
+<p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
+<div id="loader" class="loader" hidden></div>
+
+<!--Handle Test Question-->
+<h3>Testing <code>/leaderboard</code></h3>
+
+<form>
+  <label for="leaderboard-input">Enter a number:</label>
+  <input type="number" id="leaderboard-input">
+</form>
+
+<form>
+  <label for="leaderboard-sort-true">Sort:
+  <input type="checkbox" id="leaderboard-sort-true" value="true">
+    True
+  </label>
+
+  <label for="leaderboard-sort-false">Sort:
+    <input type="checkbox" id="leaderboard-sort-false" value="false">
+    False
+  </label>
+</form>
+
+<button id="buttonTestQuestion" class="button" onclick="handleTestLeaderboard()">Run Test</button>
+<button id="buttonClearQuestion" class="button" onclick="clearTestLeaderboard()">Clear</button>
+
+<hr>
+
+<div id="leaderboard">
+  Leaderboard to show up here...
+</div>
+
+<table id="leaderboard-data"></table>
+
+<hr>
+
+<!--Load the API JavaScript-->
+<script src="th-api.js"></script>
+<script src="th-test-api.js"></script>
+
+</body>
+</html>
