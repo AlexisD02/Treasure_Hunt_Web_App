@@ -45,3 +45,27 @@
 .link_buttons:hover {
     background-color: #3e8e41;
 }
+
+
+
+.table-style {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-style tr,
+.table-style td {
+    padding: 20px;
+    text-align: center;
+    vertical-align: top;
+    border: 2px solid black;
+}
+
+.table-style th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table-style tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
