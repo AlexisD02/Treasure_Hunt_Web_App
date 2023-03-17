@@ -25,16 +25,18 @@ Also discussed initial planning and outline for the web app development.
 Initialized the Git project, added members, and created placeholder pages for further development.
 Last, started keeping meeting records (this page). 
 
-### Meeting 2 (Dec 20th 2022)
+### Meeting 2 (Dec 20 2022)
 ### Duration 20mins
 
 
 
 Before leaving for Christmas holidays our team discussed the assignment handout. Allocated tasks and started work.
 
-### Meeting 3
+### Meeting 3(Feb 13 2023)
 
 Attendance: Alexis, Charalambos
+
+Discussed indepth each teammembers work load and consentrated our time and effort towards the final product
 
 
 
