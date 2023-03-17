@@ -1,4 +1,4 @@
-##
+//
 const TH_BASE_URL = "https://codecyprus.org/th/api/"; // the base URL for the true treasure hunt API
 const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the base URL for the test treasure hunt API
 const url = "https://alexisd02.github.io/CO1111/"; // the URL for a web page
