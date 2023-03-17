@@ -1,328 +1,199 @@
-// *** Note ***
-// Each function for NOW follows the same principle
-
-/* The functions handleTestList and handleTestLeaderboard have loops,
-   they do so because the API json file of each function contains a list/array to which we want to see the data */
-
-/* The rest of the functions are just showing the "values" in each json file of the respective API,
-   for better understanding visit the link provided in the test.html and hit "Try It" button to view a sample json
- */
-
-
-
+// Test List
 function handleTestList() {
-    /*handleList(caller, true);*/
+    let input_number = document.getElementById("user_input").value;
 
-    let t_Hunts = document.getElementById("tH"); // 1. Get the dedicated id from the html file, in this case test.html
+    const listUrl = TH_TEST_URL + `list?number-of-ths=${input_number}`;
 
-    const input_number = document.getElementById("input_num").value;
-
-
-    const test_listURL = `https://codecyprus.org/th/test-api/list?number-of-ths=${input_number}`; // // 2. Get the appropriate API link
-    console.log(test_listURL);
-
-    // 3. Fetch then fetch data from the provided API json
-    fetch(test_listURL)
-        .then(response => response.json())
+    fetch(listUrl)
+        .then(response => response.json()) //Parse JSON text to JavaScript object
         .then(jsonObject => {
-            const { status, treasureHunts } = jsonObject; // 4. Declare variables for each key in the json file respectively
-            if(status === "OK") {
-                t_Hunts.innerHTML = "<h2>" + "Treasure Hunts" + "</h2>"; // 5. Overwrite the initial text in the html
-
-                let th_counter = 1;
-
-                let table = document.createElement('table');
-                let thead = document.createElement('thead');
-                let tbody = document.createElement('tbody');
-
-                // create header row
-                let headerRow = document.createElement('tr');
-
-                Object.keys(treasureHunts[0]).forEach(key => {
-                    let th = document.createElement('th');
-
-                    th.innerHTML = key;
-
-                    headerRow.appendChild(th);
-                });
-
-                let test_h = document.createElement('th');
-                test_h.innerHTML = 'Test';
-                headerRow.appendChild(test_h);
-
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-
-                // create data rows
-                treasureHunts.forEach(data => {
-                    let row = document.createElement('tr');
-                    let test_d = document.createElement('td');
-
-                    Object.values(data).forEach(value => {
-                        let td = document.createElement('td');
-
-                        td.innerHTML = value;
-                        row.appendChild(td);
-                    });
-                    test_d.innerHTML = "<img src='" + (status ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
-                    row.appendChild(test_d);
-
-                    tbody.appendChild(row);
-                });
-
-                table.appendChild(tbody);
-
-                t_Hunts.appendChild(table);
-            }
-        })
-        .catch(error => console.error(error));
-
-
-}
-
-
-function handleTestStart() {
-    /*let params = {"player": "INACTIVE"}; // explicitly request an error
-    handleStart(params, caller, true);*/
-
-    let message = document.getElementById("message");
-    const inactive_start = `https://codecyprus.org/th/test-api/start?player=inactive`;
-    const empty_start = `https://codecyprus.org/th/test-api/start?player=empty`;
-    const player_start = `https://codecyprus.org/th/test-api/start?player=player`;
-    const app_start = `https://codecyprus.org/th/test-api/start?player=app`;
-    const unknown_start = `https://codecyprus.org/th/test-api/start?player=unknown`;
-    const missing_start = `https://codecyprus.org/th/test-api/start?player=missing_parameter`;
-
-    //console.log(select("werewolf", "sh iii"));
-
-    fetch(inactive_start)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, errorMessages } = jsonObject;
-            if(status === "ERROR") {
-                message.innerHTML = "<p>" + errorMessages + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-
-    fetch(empty_start)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, errorMessages } = jsonObject;
-            if(status === "ERROR") {
-                message.innerHTML += "<p>" + errorMessages + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-
-    fetch(player_start)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, errorMessages } = jsonObject;
-            if(status === "ERROR") {
-                message.innerHTML += "<p>" + errorMessages + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-
-    fetch(app_start)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, errorMessages } = jsonObject;
-            if(status === "ERROR") {
-                message.innerHTML += "<p>" + errorMessages + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-
-    fetch(unknown_start)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, errorMessages } = jsonObject;
-            if(status === "ERROR") {
-                message.innerHTML += "<p>" + errorMessages + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-
-    fetch(missing_start)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, errorMessages } = jsonObject;
-            if(status === "ERROR") {
-                message.innerHTML += "<p>" + errorMessages + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-}
-
-function handleTestQuestion() {
-    /*let params = {"player": "INACTIVE"}; // explicitly request an error
-    handleStart(params, caller, true);*/
-
-    let questions = document.getElementById("questions");
-    const test_questionsURL = `https://codecyprus.org/th/test-api/question?completed&question-type=RANDOM&$can-be-skipped&requires-location`;
-
-    fetch(test_questionsURL)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, completed, questionText,
-                    questionType, canBeSkipped, requiresLocation,
-                    numOfQuestions, currentQuestionIndex,
-                    correctScore, wrongScore, skipScore } = jsonObject;
-
-            if(status === "OK") {
-                questions.innerHTML = "<p><i>" + "Shown Questions" + "</i></p>"; // This line like other similar will overwrite what the initial text in the test.html
-
-                console.log(completed);
-                questions.innerHTML += "<p>" + completed + "</p>"; // Using "+=" will append to that id (in this case questions) showing all data, instead of overwriting
-
-                console.log(questionText);
-                questions.innerHTML += "<p>" + questionText + "</p>";
-
-                console.log(questionType);
-                questions.innerHTML += "<p>" + questionType + "</p>";
-
-                console.log(canBeSkipped);
-                questions.innerHTML += "<p>" + canBeSkipped + "</p>";
-
-                console.log(requiresLocation);
-                questions.innerHTML += "<p>" + requiresLocation + "</p>";
-
-                console.log(numOfQuestions);
-                questions.innerHTML += "<p>" + numOfQuestions + "</p>";
-
-                console.log(currentQuestionIndex);
-                questions.innerHTML += "<p>" + currentQuestionIndex + "</p>";
-
-                console.log(correctScore);
-                questions.innerHTML += "<p>" + correctScore + "</p>";
-
-                console.log(wrongScore);
-                questions.innerHTML += "<p>" + wrongScore + "</p>";
-
-                console.log(skipScore);
-                questions.innerHTML += "<p>" + skipScore + "</p>";
-
-            }
-        })
-        .catch(error => console.error(error));
-}
-
-function handleTestAnswer() {
-    /*let params = {"player": "INACTIVE"}; // explicitly request an error
-    handleStart(params, caller, true);*/
-
-    let answer = document.getElementById("answers");
-    const test_answerURL = "https://codecyprus.org/th/test-api/answer?correct&completed=false";
-
-    fetch(test_answerURL)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, correct, completed, message, scoreAdjustment } = jsonObject;
-            if(status === "OK") {
-                answer.innerHTML = "<p><i>" + "Shown Answers" + "</i></p>";
-
-                console.log(correct);
-                answer.innerHTML += "<p>" + correct + "</p>";
-
-                console.log(completed);
-                answer.innerHTML += "<p>" + completed + "</p>";
-
-                console.log(message);
-                answer.innerHTML += "<p>" + message + "</p>";
-
-                console.log(scoreAdjustment);
-                answer.innerHTML += "<p>" + scoreAdjustment + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-}
-
-function handleTestScore() {
-    /*let params = {"player": "INACTIVE"}; // explicitly request an error
-    handleStart(params, caller, true);*/
-
-    let _score = document.getElementById("score");
-    const test_scoreURL = "https://codecyprus.org/th/test-api/score?score=42&completed=true&finished=true&error=true";
-
-    fetch(test_scoreURL)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, completed, finished, player, score, hasPrize } = jsonObject;
-            if(status === "ERROR") {
-                _score.innerHTML = "<p><i>" + "Shown Score" + "</i></p>";
-
-                console.log(completed);
-                _score.innerHTML += "<p>" + completed + "</p>";
-
-                console.log(finished);
-                _score.innerHTML += "<p>" + finished + "</p>";
-
-                console.log(message);
-                _score.innerHTML += "<p>" + player + "</p>";
-
-                console.log(score);
-                _score.innerHTML += "<p>" + score + "</p>"
-
-                console.log(hasPrize);
-                _score.innerHTML += "<p>" + hasPrize + "</p>";
-            }
-        })
-        .catch(error => console.error(error));
-}
-
-function handleTestLeaderboard() {
-    /*handleList(caller, true);*/
-
-    let leader_board = document.getElementById("leaderboard");
-
-    const test_leaderboardURL = "https://codecyprus.org/th/test-api/leaderboard?sorted&hasPrize&size=42";
-
-    fetch(test_leaderboardURL)
-        .then(response => response.json())
-        .then(jsonObject => {
-            const { status, numOfPlayers, sorted, limit, hasPrize, leaderboard, treasureHuntName } = jsonObject;
-            if(status === "OK") {
-                leader_board.innerHTML = "<p><i>" + " Leaderboard" + "</i></p>";
-
-                console.log(numOfPlayers);
-                leader_board.innerHTML += "<p>" + numOfPlayers + "</p>";
-
-                console.log(sorted);
-                leader_board.innerHTML += "<p>" + sorted + "</p>";
-
-                console.log(limit);
-                leader_board.innerHTML += "<p>" + limit + "</p>";
-
-                console.log(hasPrize);
-                leader_board.innerHTML += "<p>" + hasPrize + "</p>";
-
-                console.log(treasureHuntName);
-                leader_board.innerHTML += "<p>" + treasureHuntName + "</p>";
-
-                for (let i = 0; i < leaderboard.length; i++) {
-                    let leaderboard_ul = document.createElement("ul");
-                    let treasure_hunt_count = document.createElement("p");
-                    treasure_hunt_count.innerHTML = "<p><i>" + "Leaderboard log " + (i+1) + ":" + "</i></p>";
-                    leaderboard_ul.appendChild(treasure_hunt_count);
-
-                    console.log("Leaderboard log " + (i+1) + ":");
-                    Object.entries(leaderboard[i]).forEach(([key, value]) => {
-                        console.log(`${key} : ${value}`);
-
-                        let list_key_values = document.createElement("li");
-                        list_key_values.innerHTML = "<p>" + `${key}` + ":" + `${value}` + "</p>";
-                        leaderboard_ul.appendChild(list_key_values);
-
-                        leader_board.innerHTML += "<br>";
-
-                    });
-                    console.log('\n');
-
-                    leader_board.appendChild(leaderboard_ul);
+            const { status, treasureHunts } = jsonObject;
+            if (status === "OK") {
+                console.log(treasureHunts);
+                const currentDateTime = new Date(); // Create a new Date object representing the current date and time
+                console.log(currentDateTime.toLocaleString());
+
+                challengesList.innerHTML = "";
+
+                for (let i = 0; i < treasureHunts.length; i++) {
+                    const { endsOn, startsOn, uuid, name, description } = treasureHunts[i];
+                    const timeLeftToEnd = new Date(endsOn).toLocaleString();
+                    const timeLeftToStart = new Date(startsOn).toLocaleString();
+                    let listHtml = "<ul class='lists'>";
+                    if(currentDateTime.getTime() >= startsOn && currentDateTime.getTime() <= endsOn) {
+                        listHtml += "<button class='list' onclick=\"handleTestStart(\'" + uuid + "\', \'" + name + "\')\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                            "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
+                            "<i>" + description + "</i><br/>" + // and the description in italics in the following line
+                            "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
+                    }
+                    else if(currentDateTime.getTime() < startsOn){
+                        listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                            "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
+                            "<i>" + description + "</i><br/>" + // and the description in italics in the following line
+                            "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
+                    }
+                    listHtml += "</ul>";
+                    challengesList.innerHTML += listHtml;
                 }
             }
+            else {
+                console.log(jsonObject.status);
+            }
+        });
+}
+//--------------
+let start_test_cases = [
+    { player: "A", treasure_name: "treasure-hunt1", id: "id1" },
+    { player: "B", treasure_name: null, id: "id2" },
+    { player: null, treasure_name: "treasure-hunt2", id: "unknown" },
+    { player: "C", treasure_name: "treasure-hunt3", id: null }
+]
+
+function handleTestStart() {
+    start_hunt.innerHTML = "Results";
+
+    for (let i = 0; i < start_test_cases.length; i++) {
+        start(true, start_test_cases[i].id, start_test_cases[i].treasure_name, start_test_cases[i].player);
+    }
+
+}
+
+//--------------
+// Test Question
+function handleTestQuestion() {
+    let type = document.getElementById('question-type').value; // Get selected option
+    questions(true, "steadfast", type); // Call function from main program
+}
+
+// Clear question when 'Clear' button is clicked
+function clearTestQuestion() {
+    let clear_button = document.getElementById('buttons');
+    clear_button.innerHTML = "Questions to show up here...";
+
+    let clear_message = document.getElementById('message');
+    clear_message.innerHTML = "";
+
+    let clear_text = document.getElementById('loaded-lists');
+    clear_text.innerHTML = "";
+
+    let clear_treasure_hunts = document.getElementById('treasureHunts');
+    clear_treasure_hunts.innerHTML = "";
+}
+
+//--------------
+let answer_test_cases = [
+    {session: "test-session1", correct: true, completed: false},
+    {session: "test-session2", correct: false, completed: false},
+    {session: "test-session3", correct: true, completed: true},
+    {session: "test-session4", correct: false, completed: true}
+]
+
+// Test Answer
+function handleTestAnswer() {
+    let clear_message = document.getElementById('answer');
+    clear_message.innerHTML = "";
+
+    let clear_answer_question = document.getElementById('answerQuestionMessage');
+    clear_answer_question.innerHTML = "";
+
+    let loaded_lists = document.getElementById('loaded-lists');
+    loaded_lists.innerHTML = "";
+
+    let treasure_hunts = document.getElementById('treasureHunts');
+    treasure_hunts.innerHTML = "";
+
+
+    let answer_true = document.getElementById('answer-true');
+    let answer_false = document.getElementById('answer-false');
+
+    if (answer_true.checked) {
+        answerQuestion(true, "testing-session", answer, true, false);
+    }
+    else if (answer_false.checked) {
+        answerQuestion(true, "testing-session", answer, false, false);
+    }
+}
+
+// Clear answer when 'Clear' button is clicked
+function clearTestAnswer() {
+    let clear_message = document.getElementById('answer');
+    clear_message.innerHTML = "Answer text to show up here...";
+
+    let clear_answer_question = document.getElementById('answerQuestionMessage');
+    clear_answer_question.innerHTML = "";
+
+    let loaded_lists = document.getElementById('loaded-lists');
+    loaded_lists.innerHTML = "";
+
+    let treasure_hunts = document.getElementById('treasureHunts');
+    treasure_hunts.innerHTML = "";
+}
+//--------------
+function handleTestScore() {
+    let element_score = document.getElementById('logo');
+    element_score.innerHTML = "";
+    let user_score = document.getElementById('user-score').value;
+    score(true, "random-session", user_score);
+}
+
+//--------------
+// Test leaderboard
+function handleTestLeaderboard() {
+    let leaderboard_input = document.getElementById('leaderboard-input').value; // Get input from the user
+    let leaderboard_data = document.getElementById('leaderboard-data');
+
+    let sort_true = document.getElementById('leaderboard-sort-true');
+    let sort_false = document.getElementById('leaderboard-sort-false');
+
+    let leaderboard_id = document.getElementById("leaderboard");
+
+    // Check checked if either true of false box is selected
+    let test_leaderboard_api
+    if (sort_true.checked) {
+        test_leaderboard_api = `https://codecyprus.org/th/test-api/leaderboard?sorted&hasPrize&size=${leaderboard_input}`;
+    }
+    else if (sort_false.checked) {
+        test_leaderboard_api = `https://codecyprus.org/th/test-api/leaderboard?sorted=false&hasPrize&size=${leaderboard_input}`;
+    }
+
+    // Fetch information from the test api
+    fetch(test_leaderboard_api)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const {status, numOfPlayers, sorted, limit, hasPrize, leaderboard, treasureHuntName} = jsonObject;
+            if (status === "OK") {
+                leaderboard_id.innerHTML = `Number of players: ${numOfPlayers}<br>`;
+                leaderboard_id.innerHTML += `Sorted: ${sorted}<br><br>`;
+                leaderboard.forEach(player => {
+                    let row = document.createElement("tr");
+
+                    let playerData = document.createElement("td");
+                    playerData.style.paddingRight = "50px";
+                    playerData.innerText = "Player: " + player.player;
+
+                    let scoreData = document.createElement("td");
+                    scoreData.style.paddingRight = "50px";
+                    scoreData.innerText = "Score: " + player.score;
+
+                    let completionTimeData = document.createElement("td");
+                    completionTimeData.style.paddingRight = "50px";
+                    completionTimeData.innerText = "Completion Time: " + player.completionTime;
+
+                    row.appendChild(playerData);
+                    row.appendChild(scoreData);
+                    row.appendChild(completionTimeData);
+
+                    leaderboard_data.appendChild(row);
+                });
+            }
         })
-        .catch(error => console.error(error));
+}
+
+// Clear leaderboard when 'Clear' button is clicked
+function clearTestLeaderboard () {
+    let clear_leaderboard = document.getElementById('leaderboard');
+    clear_leaderboard.innerHTML = "Leaderboard to show up here...";
+
+    let clear_leaderboard_data = document.getElementById('leaderboard-data');
+    clear_leaderboard_data.innerHTML = "";
 }

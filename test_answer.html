@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Testing framework</title>
+  <link rel="stylesheet" href="css/test_css.css"/>
+</head>
+<body>
+
+
+<h1>Testing Answer page</h1>
+
+<h2>How it works:</h2>
+
+<ul>
+  <li>Check True or False to view corresponding text.</li>
+  <li>Run Test button to show results.</li>
+  <li>Clear button to clear results</li>
+  <li>Submit buttons will produce no results</li>
+</ul>
+
+<h2>Unit Tests</h2>
+
+<p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
+<div id="loader" class="loader" hidden></div>
+
+<!--Handle Test Answer-->
+<h3>Testing <code>/answer</code></h3>
+
+<form>
+  <label for="answer-true">Answer:
+    <input type="checkbox" id="answer-true" value="true">
+    True
+  </label>
+
+  <label for="answer-false">Answer:
+    <input type="checkbox" id="answer-false" value="false">
+    False
+  </label>
+</form>
+
+<button id="buttonTestQuestion" class="button" onclick="handleTestAnswer()">Run Test</button>
+<button id="buttonClearQuestion" class="button" onclick="clearTestAnswer()">Clear</button>
+
+<hr>
+
+<div id="answer"></div>
+
+<div id="answerQuestionMessage"></div>
+
+<div id="loaded-lists">Loaded Lists from main program</div>
+<br>
+<div id="treasureHunts"></div>
+
+<hr>
+
+<!--Load the API JavaScript-->
+<script src="th-api.js"></script>
+<script src="th-test-api.js"></script>
+
+</body>
+</html>

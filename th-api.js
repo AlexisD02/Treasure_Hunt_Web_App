@@ -99,7 +99,7 @@ function submitName(uuid, treasureName, event) {
     event.preventDefault(); // prevent the form from submitting
     const playerName = document.getElementById("name").value;
     const error = document.getElementById("error");
-    start(uuid, treasureName, playerName, error);
+    start(false, uuid, treasureName, playerName);
 }
 
 /**
@@ -110,32 +110,89 @@ function submitName(uuid, treasureName, event) {
  * field is not "OK", the function logs an error message and displays the first error message in the errorMessages field
  * of the JSON response in the error element.
  */
-function start(uuid, treasureName, playerName, error) {
-    const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
+
+let start_hunt = document.getElementById("tH");
+function start(test, uuid, treasureName, playerName) {
+    let startUrl;
+
+    let table = "<table class='table-style'>";
+
+    if (test === true) {
+        startUrl = TH_TEST_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
+    }
+
+    if (test === false) {
+        startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
+    }
 
     fetch(startUrl)
         .then(response => response.json())
         .then(jsonObject => {
-            const { status, numOfQuestions, session } = jsonObject;
+            const { status, numOfQuestions, session, errorMessages} = jsonObject;
             if (status === "OK") {
                 console.log(`Treasure hunt started with session ID: ${session}`);
                 console.log(`Total number of questions: ${numOfQuestions}`);
-                questions(session);
-            } else {
+                questions(false, session);
+            }
+            /*else {
                 error.innerHTML = jsonObject.errorMessages[0];
                 console.log(status, jsonObject.errorMessages[0]);
+            }*/
+
+            if (status === "ERROR") {
+                if (playerName === null) {
+                    table += "<td>" + errorMessages[0] + "</td>";
+                    table += "<td>" + "Treasure-hunt Name: " + treasureName + "</td>";
+                    table += "<td>" + "Treasure-hunt Id: " + uuid + "</td>";
+                    table += "<td><img src='" + (null ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                }
+                else if (treasureName === null) {
+                    table += "<td>" + "Player Name: " + playerName + "</td>";
+                    table += "<td>" + errorMessages[1] + "</td>";
+                    table += "<td>" + "Treasure-hunt Id: " + uuid + "</td>";
+                    table += "<td><img src='" + (null ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                }
+                else if (uuid === null) {
+                    table += "<td>" + "Player Name: " + playerName + "</td>";
+                    table += "<td>" + "Treasure-hunt Name: " + treasureName + "</td>";
+                    table += "<td>" + errorMessages[2] + "</td>";
+                    table += "<td><img src='" + (null ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                }
+                // If none of the variables are null, add their values to the table
+                else {
+                    table += "<td>" + "Player Name: " + playerName + "</td>";
+                    table += "<td>" + "Treasure-hunt Name: " + treasureName + "</td>";
+                    table += "<td>" + "Treasure-hunt Id: " + uuid + "</td>";
+                    table += "<td><img src='" + ('images/correct.png') + "' alt='Success or failed icon'/>";
+                }
+
+                // Close the table tag
+                table += "</table>";
+
+                // Add the table to the start_hunt element
+                start_hunt.innerHTML += table;
+                console.log(errorMessages);
+                console.log(temp_list);
+
             }
         })
         .catch(error => console.error(error));
 }
 
-function questions(session) {
+function questions(test, session, test_question_type) {
     // Define the API endpoint URL
+    let questionsUrl;
 
-    const questionUrl = TH_BASE_URL + `question?session=${session}`;
+    if (test === true) {
+        questionsUrl = TH_TEST_URL + "question?question-type=" + test_question_type +"&can-be-skipped=true&requires-location=true";
+    }
+
+    if (test === false) {
+        questionsUrl = TH_BASE_URL + `question?session=${session}`;
+    }
 
     // Make a GET request to the API endpoint using fetch()
-    fetch(questionUrl)
+    fetch(questionsUrl)
         .then(response => response.json()) // Parse the response as JSON
         .then(jsonObject => {
             const { questionText, questionType, canBeSkipped, requiresLocation, currentQuestionIndex,
@@ -144,7 +201,7 @@ function questions(session) {
             console.log("Can be Skipped: " + canBeSkipped);
 
             totalScore += correctScore;
-            score(session);
+            score(false, session);
             buttons.innerHTML = "";
             // Call skipQuestion function
             if(canBeSkipped === true) {
@@ -227,7 +284,7 @@ function questions(session) {
                 }
             });
 
-                document.getElementById('qr-button').addEventListener('click', () => {
+            document.getElementById('qr-button').addEventListener('click', () => {
                 if (scanner) {
                     QRScannerStop();
                     return;
@@ -298,8 +355,17 @@ function QRScannerStop() {
  * In all cases, the function logs the scoreAdjustment to the console and calls the score function to display the current
  * score for the treasure hunt. If the status property is not equal to "OK", the function logs the status property to the console.
  */
-function answerQuestion(sessionId, answer) {
-    const answerUrl = TH_BASE_URL + `answer?session=${sessionId}&answer=${encodeURIComponent(answer)}`;
+function answerQuestion(test, sessionId, answer, correct, completed) {
+    let answerUrl;
+
+    if (test === true) {
+        answerUrl = TH_TEST_URL + `answer?correct=${correct}&completed=${completed}&${sessionId}`;
+    }
+
+    if (test === false) {
+        answerUrl = TH_BASE_URL + `answer?session=${sessionId}&answer=${encodeURIComponent(answer)}`;
+
+    }
 
     fetch(answerUrl)
         .then(response => response.json())
@@ -326,7 +392,7 @@ function answerQuestion(sessionId, answer) {
                     }
                 }
                 console.log("Score adjustment: " + scoreAdjustment);
-                score(sessionId);
+                score(false, sessionId);
             }
             else {
                 console.log(status);
@@ -351,7 +417,7 @@ function answerQuestion(sessionId, answer) {
  * tooltip is always displayed, and the direction option is set to 'top' to display the tooltip above the marker.
  * Finally, the offset option is set to [-14, -10] to position the tooltip 14 pixels to the left and 10 pixels up from
  * the top center of the marker.
-*/
+ */
 function initMap() {
     if (!map) {
         map = L.map('map').setView([0, 0], 2);
@@ -492,12 +558,20 @@ function skipQuestion(sessionId) {
     }
 }
 
-function score(sessionId) {
+function score(test, sessionId, test_score) {
+    let scoreUrl;
 
-    const scoreURL = TH_BASE_URL + `score?session=${sessionId}`;
+    if (test === true) {
+        scoreUrl = TH_TEST_URL + `score?score=${test_score}`;
+    }
+
+    if (test === false) {
+        scoreUrl = TH_BASE_URL + `score?session=${sessionId}`;
+
+    }
 
     console.log("Score-section\n");
-    fetch(scoreURL)
+    fetch(scoreUrl)
         .then(response => response.json())
         .then(jsonObject => {
             const { status, completed, finished, player, score } = jsonObject;
@@ -536,11 +610,19 @@ function score(sessionId) {
         .catch(error => console.error(error));
 }
 
-function displayLeaderboard(sessionId) {
+function displayLeaderboard(test, sessionId, sorted, size) {
+    let leaderboardUrl;
 
-    const leaderboardURL = TH_BASE_URL + `leaderboard?session=${sessionId}&sorted&limit=10`;
+    if (test === true) {
+        return TH_TEST_URL + `leaderboard?${sorted}&size=${size}`;
+    }
 
-    fetch(leaderboardURL)
+    if (test === false) {
+        leaderboardUrl = TH_BASE_URL + `leaderboard?session=${sessionId}&sorted&limit=10`;
+
+    }
+
+    fetch(leaderboardUrl)
         .then(response => response.json())
         .then(jsonObject => {
             const {status, numOfPlayers, sorted, limit, hasPrize, leaderboard, treasureHuntName} = jsonObject;
