@@ -3,27 +3,49 @@
 ## Team
 
 The team consists of the following members (with the assigned roles):
-- *Bart* - Marketing Guru, develops and maintains all marketing material (incl. promotional video) and maintains the team's Twitter account - also develops the Web Apps's HTML pages
-- *Lisa* - Coding Jini, develops most of the JavaScript and some of the HTML code for the Web App - also helps with Testing
-- *Homer* - Testing Master, Develops and maintains the testing page and also contributes to the marketing efforts - also responsible for keeping meeting notes (this page)
+- *Alexis Demetriou* - Team Leader & Full-Stack Developer. Alexis is responsible for the development of the main application using
+HTML, CSS, and JavaScript. He works closely with Charalampos to ensure that the server and the client-side of
+the application communicate smoothly. As well as working closely with Ivan regarding minor and major bug fixes.
+- *Charalampos Nikolaou* - Backend Developer. Charalampos is responsible for the server-side of the application. He does the JavaScript
+coding to ensure that the server is working correctly and all the client-server communication is functioning
+as expected. Additionally, Charalambos develops the testing environment for our application.
+- *Ivan Semenov* - Marketing Specialist. Ivan is responsible for the promotion and marketing of our Treasure Hunt App. He creates
+  marketing campaigns and strategies, manages our social media accounts, and interacts with users to gather feedback
+  and improve the app's user experience. Additionally Ivan works closely with Alexis on design and functionality of the app.
 
 ## Meetings
 
-### Week 1 (Oct 8th)
+### Meeting 1 (Dec 11 2022)  
+### Duration: 1hr
 
-Attendance: Bart, Lisa, Homer
+Attendance: Alexis, Charalambos, Ivan
 
 The team met for the first time, discussed the project and identified strengths and roles for the members.
 Also discussed initial planning and outline for the web app development.
 Initialized the Git project, added members, and created placeholder pages for further development.
 Last, started keeping meeting records (this page). 
 
-### Week 2 (Oct 15th)
+### Meeting 2 (Dec 20th 2022)
+### Duration 20mins
 
-Attendance: Bart, Lisa, Homer
 
-Discussed the assignment handout. Allocated tasks and started work.
-By next week we will have a full-blown marketing page and start with social media posts.
+
+Before leaving for Christmas holidays our team discussed the assignment handout. Allocated tasks and started work.
+
+### Meeting 3
+
+Attendance: Alexis, Charalambos
+
+
+
+### Meeting 4
+
+Attendance: Alexis, Charalambos, Ivan
+
+Disscussed further 
+
+
+
 
 ### Week 3 ...
 
@@ -31,3 +53,13 @@ Attendance: Lisa, Homer (Bart was home with the flu)
 
 Discussed the assignment handout. Allocated tasks and started work.
  ...etc.
+
+### Meeting 5 (Mar 2 2023)
+### Duration: 25mins
+
+Attendance: Alexis, Ivan
+
+Discussed the marketing strategies and our targeted audience. Which Social Media platforms
+should we focus on, and which ones to avoid. Lastly, a company name was agreed upon. "ACI Group"
+
+
