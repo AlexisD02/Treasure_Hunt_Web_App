@@ -17,6 +17,7 @@
 <header>
     <div class="logo">ACI Group</div>
     <div>
+        <a onclick="showModal('helpPage');" href="#" class="btn"><b>Help</b></a>
         <a href="about.html" class="btn"><b>About</b></a>
     </div>
 </header>
@@ -28,6 +29,18 @@
 
 <div class="next-page">
     <a class="next-button" href="app.html">Let's get started</a>
+</div>
+
+<!-- Help page Modal -->
+<div id="helpPage" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="hideModal('helpPage');">&times;</span>
+        <h2 class="title_help">Help</h2>
+        <p>Select a category, register your name and try to answer the questions.</p>
+        <p>Each correct answer is +10 points.<br>
+            Each wrong answer is -3 points.<br>
+            Each skipped questionText is -5 points.</p>
+    </div>
 </div>
 
 <script src="js/background.js"></script>
