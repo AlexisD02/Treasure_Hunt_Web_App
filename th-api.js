@@ -211,7 +211,7 @@ function questions(session) {
         .catch(error => console.error(error)); // Handle any errors
 }
 
-let cameraIndex = 0; // The index of the selected camera.
+let cameraIndex = 1; // The index of the selected camera.
 let cameraArray; // An array of all available cameras.
 const videoElement = document.createElement('video');
 const button_qr = document.getElementById('button_qr');
@@ -236,11 +236,14 @@ function startQRCodeScanner() {
         .then((cameras) => {
             cameraArray = cameras;
             if (cameras.length > 0) {
+                // Find the back camera or use the first available camera
+                const backCamera = cameras[1] || cameras[0];
+
                 scanner = new Instascan.Scanner({
                     video: videoElement,
                     mirror: cameras.length === 1,
                 });
-                scanner.start(cameras[cameraIndex]);
+                scanner.start(backCamera);
                 button_qr.innerHTML = '<button id="switchCamera" onclick="switchCamera();">Switch camera</button>';
                 scanner.addListener('scan', (content) => {
                     answerQuestionMessage.innerHTML = isUrl(content) ? `<a href="${content}" target="_blank">Click to view</a>` : '';
