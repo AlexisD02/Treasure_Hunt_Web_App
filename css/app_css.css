@@ -42,7 +42,7 @@ header {
     padding: 8px 16px;
 }
 
-.back_button{
+#back_button{
     width: 100%;
     background-color: var(--light_gray);
 }
@@ -176,6 +176,20 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #0066cc;
+}
+
+#switchCamera {
+    margin-left: 6%;
+    background-color: #f1f1f1;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#switchCamera:hover {
+    background-color: #ddd;
 }
 
 #center {

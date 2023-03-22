@@ -11,7 +11,6 @@ const tbody = document.getElementById('tbody');
 const title = document.getElementById('logo');
 const previewWrapper = document.getElementById('preview_wrapper');
 const postScore = document.getElementById('postScore');
-const videoElement = document.createElement('video');
 
 let scanner = null, intervalID, map, locationArray = [], totalScore = 0;
 
@@ -26,9 +25,9 @@ function getChallenges() {
     fetch(listUrl)
         .then(response => response.json()) //Parse JSON text to JavaScript object
         .then(jsonObject => {
-            challengesList.innerText = "Loaded!";
             const { status, treasureHunts } = jsonObject;
             if (status === "OK") {
+                challengesList.innerHTML = "";
                 console.log(treasureHunts);
                 const currentDateTime = new Date(); // Create a new Date object representing the current date and time
                 console.log(currentDateTime.toLocaleString());
@@ -114,6 +113,8 @@ function questions(session) {
 
     const questionUrl = TH_BASE_URL + `question?session=${session}`;
 
+    challengesList.innerHTML = "<div class=\"loader\"></div>";
+
     // Make a GET request to the API endpoint using fetch()
     fetch(questionUrl)
         .then(response => response.json()) // Parse the response as JSON
@@ -132,7 +133,6 @@ function questions(session) {
             }
 
             buttons.innerHTML += "<a href=\"#\" class=\"btn\" id=\"qr-button\"><span class=\"material-icons\">qr_code_scanner</span></a>";
-            buttons.innerHTML += "<a onclick=\"\" class=\"btn\"><b>Menu</b></a>";
 
             // Log the retrieved question and its details to the console
             console.log("Question-Text: " + questionText);
@@ -206,64 +206,66 @@ function questions(session) {
                     answerQuestion(session, answer);
                 }
             });
-
-            document.getElementById('qr-button').addEventListener('click', () => {
-                if (scanner) {
-                    QRScannerStop();
-                    return;
-                }
-
-                function isUrl(content) {
-                    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-                    return urlRegex.test(content);
-                }
-
-                Instascan.Camera.getCameras().then((cameras) => {
-                    if (cameras) {
-                        if (cameras[1]) {
-                            scanner = new Instascan.Scanner({
-                                video: videoElement,
-                                mirror: false
-                            });
-                            scanner.start(cameras[1]);
-                        }
-                        else {
-                            scanner = new Instascan.Scanner({
-                                video: videoElement,
-                                mirror: true // flip video horizontally
-                            });
-                            scanner.start(cameras[0]);
-                        }
-                        scanner.addListener('scan', (content) => {
-                            if (isUrl(content)) {
-                                answerQuestionMessage.innerHTML = "<a href='" + content + "' target='_blank'>Click to view</a>";
-                            }
-                            else {
-                                answerQuestionMessage.innerHTML = "";
-                            }
-                            document.getElementById('answer').value = content;
-                            QRScannerStop();
-                        });
-                        previewWrapper.appendChild(videoElement);
-                    }
-                    else {
-                        console.error('No cameras found.');
-                        alert("No cameras found");
-                    }
-                }).catch((error) => {
-                    console.error(error);
-                    alert("Camera access has been denied. Please enable your camera or search for a device with a camera.");
-                });
-            });
-
+            document.getElementById('qr-button').addEventListener('click', startQRCodeScanner);
         })
         .catch(error => console.error(error)); // Handle any errors
 }
 
+let cameraIndex = 0; // The index of the selected camera.
+let cameraArray; // An array of all available cameras.
+const videoElement = document.createElement('video');
+const button_qr = document.getElementById('button_qr');
+
+function switchCamera() {
+    cameraIndex = (cameraIndex + 1) % cameraArray.length;
+    scanner.start(cameraArray[cameraIndex]);
+}
+
+function isUrl(content) {
+    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+    return urlRegex.test(content);
+}
+
+function startQRCodeScanner() {
+    if (scanner) {
+        QRScannerStop();
+        return;
+    }
+
+    Instascan.Camera.getCameras()
+        .then((cameras) => {
+            cameraArray = cameras;
+            if (cameras.length > 0) {
+                scanner = new Instascan.Scanner({
+                    video: videoElement,
+                    mirror: cameras.length === 1,
+                });
+                scanner.start(cameras[cameraIndex]);
+                button_qr.innerHTML = '<button id="switchCamera" onclick="switchCamera();">Switch camera</button>';
+                scanner.addListener('scan', (content) => {
+                    answerQuestionMessage.innerHTML = isUrl(content) ? `<a href="${content}" target="_blank">Click to view</a>` : '';
+                    document.getElementById('answer').value = content;
+                    QRScannerStop();
+                });
+                previewWrapper.appendChild(videoElement);
+            } else {
+                console.error('No cameras found.');
+                alert('No cameras found');
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+            alert('Camera access has been denied. Please enable your camera or search for a device with a camera.');
+        });
+}
+
 function QRScannerStop() {
-    scanner.stop();
-    scanner = null;
-    previewWrapper.innerHTML = '';
+    if (scanner) {
+        scanner.stop();
+        scanner = null;
+        previewWrapper.innerHTML = '';
+        button_qr.innerHTML = '';
+    }
 }
 
 function answerQuestion(sessionId, answer) {
@@ -463,6 +465,11 @@ function score(sessionId) {
 function displayLeaderboard(sessionId) {
 
     const leaderboardURL = TH_BASE_URL + `leaderboard?session=${sessionId}&sorted&limit=10`;
+
+    challengesList.innerHTML = "";
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+    answerQuestionMessage.innerHTML = "<div class=\"loader\"></div>";
 
     fetch(leaderboardURL)
         .then(response => response.json())
