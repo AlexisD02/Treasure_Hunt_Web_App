@@ -1,32 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Set the character encoding for the page -->
   <meta charset="UTF-8">
+  <!-- Set the viewport to be responsive for different screen sizes -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Set the page title -->
   <title>Testing framework</title>
+  <!-- Link to the CSS stylesheet -->
   <link rel="stylesheet" href="css/test_css.css"/>
 </head>
 <body>
 
-
+<!-- Main heading -->
 <h1>Testing Answer page</h1>
 
+<!-- How it works section -->
 <h2>How it works:</h2>
 
+<!-- Instructions for using the testing page -->
 <ul>
   <li>Check True or False to view corresponding text.</li>
   <li>Run Test button to show results.</li>
   <li>Clear button to clear results</li>
 </ul>
 
+<!-- Unit Tests section -->
 <h2>Unit Tests</h2>
 
+<!-- Description of Unit Tests -->
 <p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
+<!-- Loader element -->
 <div id="loader" class="loader" hidden></div>
 
-<!--Handle Test Answer-->
+<!-- Handle Test Answer section -->
 <h3>Testing <code>/answer</code></h3>
 
+<!-- Radio buttons for True or False -->
 <input type="radio" id="true" name="myOption" value="true" checked>
 <label for="true">True</label>
 <br>
@@ -34,22 +44,28 @@
 <label for="false">False</label>
 <br>
 
+<!-- Run Test and Clear buttons -->
 <button id="buttonTestQuestion" class="button" onclick="handleTestAnswer()">Run Test</button>
 <button id="buttonClearQuestion" class="button" onclick="clearTestAnswer()">Clear</button>
 
+<!-- Horizontal rule for visual separation -->
 <hr>
 
+<!-- Container for the answer -->
 <div id="answer">
   Answer text to show up here...
 </div>
 
+<!-- Container for the answer question message -->
 <div id="answerQuestionMessage"></div>
 
+<!-- Container for the treasure hunts -->
 <div id="treasureHunts"></div>
 
+<!-- Horizontal rule for visual separation -->
 <hr>
 
-<!--Load the API JavaScript-->
+<!-- Load the JavaScript files for the API -->
 <!--<script src="th-api.js"></script>-->
 <script src="js/th-test-api.js"></script>
 
