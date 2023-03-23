@@ -1,6 +1,10 @@
+const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the base URL for the test treasure hunt API
+
 // Test List
 function handleTestList() {
     let input_number = document.getElementById("user_input").value;
+
+    let challengesList = document.getElementById('treasureHunts');
 
     const listUrl = TH_TEST_URL + `list?number-of-ths=${input_number}`;
 
@@ -20,18 +24,12 @@ function handleTestList() {
                     const timeLeftToEnd = new Date(endsOn).toLocaleString();
                     const timeLeftToStart = new Date(startsOn).toLocaleString();
                     let listHtml = "<ul class='lists'>";
-                    if(currentDateTime.getTime() >= startsOn && currentDateTime.getTime() <= endsOn) {
-                        listHtml += "<button class='list' onclick=\"handleTestStart(\'" + uuid + "\', \'" + name + "\')\"><li>" + // each treasure hunt item is shown with an individual DIV element
-                            "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
-                            "<i>" + description + "</i><br/>" + // and the description in italics in the following line
-                            "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
-                    }
-                    else if(currentDateTime.getTime() < startsOn){
-                        listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
+
+                    listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
                             "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                             "<i>" + description + "</i><br/>" + // and the description in italics in the following line
                             "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
-                    }
+
                     listHtml += "</ul>";
                     challengesList.innerHTML += listHtml;
                 }
@@ -50,10 +48,57 @@ let start_test_cases = [
 ]
 
 function handleTestStart() {
+    let start_hunt = document.getElementById('tH');
     start_hunt.innerHTML = "Results";
 
     for (let i = 0; i < start_test_cases.length; i++) {
-        start(true, start_test_cases[i].id, start_test_cases[i].treasure_name, start_test_cases[i].player);
+
+        let table = "<table class='table-style'>";
+
+        let test_startUrl = TH_TEST_URL + `start?player=${start_test_cases[i].player}&app=${start_test_cases[i].treasure_name}&treasure-hunt-id=${start_test_cases[i].id}`
+
+        fetch(test_startUrl)
+            .then(response => response.json())
+            .then(jsonObject => {
+                const {status, numOfQuestions, session, errorMessages} = jsonObject;
+
+                if (status === "ERROR") {
+                    if (start_test_cases[i].player === null) {
+                        table += "<td>" + errorMessages[0] + "</td>";
+                        table += "<td>" + "Treasure-hunt Name: " + start_test_cases[i].treasure_name + "</td>";
+                        table += "<td>" + "Treasure-hunt Id: " + start_test_cases[i].id + "</td>";
+                        table += "<td><img src='" + (null ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                    }
+                    else if (start_test_cases[i].treasure_name === null) {
+                        table += "<td>" + "Player Name: " + start_test_cases[i].player + "</td>";
+                        table += "<td>" + errorMessages[1] + "</td>";
+                        table += "<td>" + "Treasure-hunt Id: " + start_test_cases[i].id + "</td>";
+                        table += "<td><img src='" + (null ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                    }
+                    else if (start_test_cases[i].id === null) {
+                        table += "<td>" + "Player Name: " + start_test_cases[i].player + "</td>";
+                        table += "<td>" + "Treasure-hunt Name: " + start_test_cases[i].treasure_name + "</td>";
+                        table += "<td>" + errorMessages[2] + "</td>";
+                        table += "<td><img src='" + (null ? 'images/correct.png' : 'images/wrong.png') + "' alt='Success or failed icon'/>";
+                    }
+                    // If none of the variables are null, add their values to the table
+                    else {
+                        table += "<td>" + "Player Name: " + start_test_cases[i].player + "</td>";
+                        table += "<td>" + "Treasure-hunt Name: " + start_test_cases[i].treasure_name + "</td>";
+                        table += "<td>" + "Treasure-hunt Id: " + start_test_cases[i].id + "</td>";
+                        table += "<td><img src='" + ('images/correct.png') + "' alt='Success or failed icon'/>";
+                    }
+
+                    // Close the table tag
+                    table += "</table>";
+
+                    // Add the table to the start_hunt element
+                    start_hunt.innerHTML += table;
+                    console.log(errorMessages);
+
+                }
+            })
+            .catch(error => console.error(error));
     }
 
 }
@@ -62,7 +107,112 @@ function handleTestStart() {
 // Test Question
 function handleTestQuestion() {
     let type = document.getElementById('question-type').value; // Get selected option
-    questions(true, "steadfast", type); // Call function from main program
+    //questions(true, "steadfast", type); // Call function from main program
+
+    let buttons = document.getElementById('buttons');
+    let messageBox = document.getElementById('message');
+    let answerQuestionMessage = document.getElementById('answerQuestionMessage');
+    let challengesList = document.getElementById('treasureHunts');
+
+    let test_questionsUrl = TH_TEST_URL + `question?question-type=${type}&can-be-skipped=true&requires-location=true`;
+
+    let session = "test_session";
+
+    // Make a GET request to the API endpoint using fetch()
+    fetch(test_questionsUrl)
+        .then(response => response.json()) // Parse the response as JSON
+        .then(jsonObject => {
+            const { questionText, questionType, canBeSkipped, requiresLocation, currentQuestionIndex,
+                correctScore, wrongScore, skipScore } = jsonObject;
+
+            console.log("Can be Skipped: " + canBeSkipped);
+
+            /*totalScore += correctScore;
+            score(false, session);*/
+            buttons.innerHTML = "";
+            // Call skipQuestion function
+            if(canBeSkipped === true) {
+                buttons.innerHTML = "<a onclick=\"skipQuestion(\'" + session + "\')\" class=\"btn\"><b>Skip</b></a>";
+            }
+
+            buttons.innerHTML += "<a href=\"#\" class=\"btn\" id=\"qr-button\"><span class=\"material-icons\">qr_code_scanner</span></a>";
+            buttons.innerHTML += "<a onclick=\"\" class=\"btn\"><b>Menu</b></a>";
+
+            // Log the retrieved question and its details to the console
+            console.log("Question-Text: " + questionText);
+            messageBox.innerHTML = "<p>" + questionText + "</p>";
+
+            if(canBeSkipped === false) {
+                messageBox.innerHTML += "<p class=\"skip_text\">Cannot be skipped!</p>";
+            }
+
+            answerQuestionMessage.innerHTML = "";
+
+            console.log("Question-Type: " + questionType);
+            if(questionType === "BOOLEAN") {
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\">" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'true\')\" class=\"answer\" " +
+                    "name=\"answer\" value=\"true\">True</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'false\')\" class=\"answer\" " +
+                    "name=\"answer\" value=\"false\">False</input></div></form>";
+            }
+
+            if(questionType === "INTEGER") {
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                    "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an integer...\" required>" +
+                    "</div><button type=\"submit\">Submit</button></div></form>";
+            }
+
+            if(questionType === "NUMERIC") {
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                    "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an number...\" step=\"0.01\" required>" +
+                    "</div><button type=\"submit\">Submit</button></div></form>";
+            }
+
+            if(questionType === "MCQ") {
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><label for=\"response\"></label>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'A\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"A\">A</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'B\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"B\">B</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'C\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"C\">C</input>" +
+                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'D\')\" " +
+                    "class=\"answer\" name=\"answer\" value=\"D\">D</input></div></form>";
+            }
+
+            if(questionType === "TEXT") {
+                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
+                    "<input type=\"text\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Answer here...\" required>" +
+                    "</div><button type=\"submit\">Submit</button></div></form>";
+            }
+
+            /*console.log("Requires Location?: " + requiresLocation);
+            if(requiresLocation === true) {
+                getLocation(session);
+                intervalID = setInterval(() => { getLocation(session); }, 31000);
+            }
+            else{
+                clearInterval(intervalID);
+            }*/
+
+            console.log("Question index: " + currentQuestionIndex);
+            console.log("Score if correct answer: " + correctScore);
+            console.log("Score if wrong answer: " + wrongScore);
+            console.log("Score if skip to answer: " + skipScore);
+
+
+            let form = document.getElementById("form");
+            form.addEventListener("submit", function(event) {
+                event.preventDefault(); // prevent the form from submitting
+                if(questionType === "INTEGER" || questionType === "NUMERIC" || questionType === "TEXT") {
+                    const answer = document.getElementById("answer").value;
+                    answerQuestion(session, answer);
+                }
+            });
+
+        })
+        .catch(error => console.error(error)); // Handle any errors
 }
 
 // Clear question when 'Clear' button is clicked
@@ -72,9 +222,6 @@ function clearTestQuestion() {
 
     let clear_message = document.getElementById('message');
     clear_message.innerHTML = "";
-
-    let clear_text = document.getElementById('loaded-lists');
-    clear_text.innerHTML = "";
 
     let clear_treasure_hunts = document.getElementById('treasureHunts');
     clear_treasure_hunts.innerHTML = "";
@@ -90,14 +237,11 @@ let answer_test_cases = [
 
 // Test Answer
 function handleTestAnswer() {
-    let clear_message = document.getElementById('answer');
-    clear_message.innerHTML = "";
+    let answer = document.getElementById('answer');
+    answer.innerHTML = "";
 
-    let clear_answer_question = document.getElementById('answerQuestionMessage');
-    clear_answer_question.innerHTML = "";
-
-    let loaded_lists = document.getElementById('loaded-lists');
-    loaded_lists.innerHTML = "";
+    let answerQuestionMessage = document.getElementById('answerQuestionMessage');
+    answerQuestionMessage.innerHTML = "";
 
     let treasure_hunts = document.getElementById('treasureHunts');
     treasure_hunts.innerHTML = "";
@@ -106,12 +250,43 @@ function handleTestAnswer() {
     let answer_true = document.getElementById('answer-true');
     let answer_false = document.getElementById('answer-false');
 
+    let test_answerUrl;
+
     if (answer_true.checked) {
-        answerQuestion(true, "testing-session", answer, true, false);
+        test_answerUrl = TH_TEST_URL + `answer?correct&completed=true`;
     }
     else if (answer_false.checked) {
-        answerQuestion(true, "testing-session", answer, false, false);
+        test_answerUrl = TH_TEST_URL + `answer?completed=true`;
     }
+    else {
+        answer.innerHTML = "Please check a box.";
+    }
+
+    fetch(test_answerUrl)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, correct, completed, message, scoreAdjustment } = jsonObject;
+            if (status === "OK") {
+                if (completed) {
+                    if (correct) {
+                        console.log(message);
+                        answerQuestionMessage.innerHTML = "<p style='color: green'>" + message + "</p>";
+                        answerQuestionMessage.innerHTML += "Score adjustment: " + scoreAdjustment;
+                    }
+                    else {
+                        console.log(message);
+                        answerQuestionMessage.innerHTML = "<p style='color: red'>" + message + "</p>";
+                        answerQuestionMessage.innerHTML += "Score adjustments: " + scoreAdjustment;
+                    }
+                }
+
+                console.log("Score adjustment: " + scoreAdjustment);
+            }
+            else {
+                console.log(status);
+            }
+        })
+        .catch(error => console.error(error));
 }
 
 // Clear answer when 'Clear' button is clicked
@@ -122,19 +297,41 @@ function clearTestAnswer() {
     let clear_answer_question = document.getElementById('answerQuestionMessage');
     clear_answer_question.innerHTML = "";
 
-    let loaded_lists = document.getElementById('loaded-lists');
-    loaded_lists.innerHTML = "";
-
     let treasure_hunts = document.getElementById('treasureHunts');
     treasure_hunts.innerHTML = "";
 }
+
 //--------------
 function handleTestScore() {
-    let element_score = document.getElementById('logo');
-    element_score.innerHTML = "";
+    let title = document.getElementById('logo');
+    title.innerHTML = "";
     let user_score = document.getElementById('user-score').value;
-    score(true, "random-session", user_score);
+
+    let messageBox = document.getElementById('message');
+    //score(true, "random-session", user_score);
+
+    let test_scoreUrl = TH_TEST_URL + `score?score=${user_score}`;
+
+    console.log("Score-section\n");
+    fetch(test_scoreUrl)
+        .then(response => response.json())
+        .then(jsonObject => {
+            const { status, completed, finished, player, score } = jsonObject;
+            if (status === "OK") {
+                console.log("Completed: " + completed);
+                console.log("Finished: " + finished);
+                console.log("Player: " + player);
+                console.log("Score: " + score);
+                title.innerHTML = "Score: " + score;
+                if(completed) {
+                    messageBox.innerHTML = "<p style='color: green'>Congratulations! You have completed the treasure " +
+                        "hunt with a score of " + score + "/" + totalScore + "</p>";
+                }
+            }
+        })
+        .catch(error => console.error(error));
 }
+
 
 //--------------
 // Test leaderboard
@@ -154,6 +351,9 @@ function handleTestLeaderboard() {
     }
     else if (sort_false.checked) {
         test_leaderboard_api = `https://codecyprus.org/th/test-api/leaderboard?sorted=false&hasPrize&size=${leaderboard_input}`;
+    }
+    else {
+        leaderboard_id.innerHTML = "Please check a box.";
     }
 
     // Fetch information from the test api

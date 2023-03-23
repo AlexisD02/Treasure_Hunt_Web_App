@@ -16,7 +16,7 @@
   <li>Check True or False to view corresponding text.</li>
   <li>Run Test button to show results.</li>
   <li>Clear button to clear results</li>
-  <li>Submit buttons will produce no results</li>
+  <li>If both boxes are checked, then by default the result is true</li>
 </ul>
 
 <h2>Unit Tests</h2>
@@ -32,7 +32,7 @@
     <input type="checkbox" id="answer-true" value="true">
     True
   </label>
-
+  <br>
   <label for="answer-false">Answer:
     <input type="checkbox" id="answer-false" value="false">
     False
@@ -44,18 +44,18 @@
 
 <hr>
 
-<div id="answer"></div>
+<div id="answer">
+  Answer text to show up here...
+</div>
 
 <div id="answerQuestionMessage"></div>
 
-<div id="loaded-lists">Loaded Lists from main program</div>
-<br>
 <div id="treasureHunts"></div>
 
 <hr>
 
 <!--Load the API JavaScript-->
-<script src="th-api.js"></script>
+<!--<script src="th-api.js"></script>-->
 <script src="th-test-api.js"></script>
 
 </body>

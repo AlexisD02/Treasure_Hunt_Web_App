@@ -14,6 +14,7 @@
 
 <ul>
   <li>Enter a number to determine the size of the leaderboard.</li>
+  <li>If no input from the user is provided, then the test leaderboard will produce 42 players.</li>
   <li>Check a box to view the testing leaderboard either sorted or not.</li>
   <li>If both boxes are checked, then by default the Sorting will be set to true</li>
   <li>Run Test button to show results.</li>
@@ -38,7 +39,7 @@
   <input type="checkbox" id="leaderboard-sort-true" value="true">
     True
   </label>
-
+  <br>
   <label for="leaderboard-sort-false">Sort:
     <input type="checkbox" id="leaderboard-sort-false" value="false">
     False
@@ -58,8 +59,9 @@
 
 <hr>
 
+
 <!--Load the API JavaScript-->
-<script src="th-api.js"></script>
+<!--<script src="th-api.js"></script>-->
 <script src="th-test-api.js"></script>
 
 </body>
