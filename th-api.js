@@ -11,9 +11,10 @@ const tbody = document.getElementById('tbody');
 const title = document.getElementById('logo');
 const previewWrapper = document.getElementById('preview_wrapper');
 const postScore = document.getElementById('postScore');
+const videoElement = document.createElement('video');
+const button_qr = document.getElementById('button_qr');
 
-let scanner = null, intervalID, map, locationArray = [], totalScore = 0;
-
+let scanner = null, intervalID, map, locationArray = [], totalScore = 0, cameraIndex = 1, cameraArray;
 /**
  * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
  * processing the result to update the HTML with a bullet list with the treasure hunt names and descriptions. Also,
@@ -115,106 +116,102 @@ function questions(session) {
 
     challengesList.innerHTML = "<div class=\"loader\"></div>";
 
-    // Make a GET request to the API endpoint using fetch()
+// Make a GET request to the API endpoint using fetch()
     fetch(questionUrl)
         .then(response => response.json()) // Parse the response as JSON
         .then(jsonObject => {
-            const { questionText, questionType, canBeSkipped, requiresLocation, currentQuestionIndex,
-                correctScore, wrongScore, skipScore } = jsonObject;
+            const {
+                questionText, questionType, canBeSkipped, requiresLocation, currentQuestionIndex,
+                correctScore, wrongScore, skipScore
+            } = jsonObject;
 
-            console.log("Can be Skipped: " + canBeSkipped);
-
-            totalScore += correctScore;
-            score(session);
-            buttons.innerHTML = "";
-            // Call skipQuestion function
-            if(canBeSkipped === true) {
-                buttons.innerHTML = "<a onclick=\"skipQuestion(\'" + session + "\')\" class=\"btn\"><b>Skip</b></a>";
-            }
-
-            buttons.innerHTML += "<a href=\"#\" class=\"btn\" id=\"qr-button\"><span class=\"material-icons\">qr_code_scanner</span></a>";
-
-            // Log the retrieved question and its details to the console
             console.log("Question-Text: " + questionText);
-            messageBox.innerHTML = "<p>" + questionText + "</p>";
-
-            if(canBeSkipped === false) {
-                messageBox.innerHTML += "<p class=\"skip_text\">Cannot be skipped!</p>";
-            }
-
-            answerQuestionMessage.innerHTML = "";
-
             console.log("Question-Type: " + questionType);
-            if(questionType === "BOOLEAN") {
-                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\">" +
-                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'true\')\" class=\"answer\" " +
-                    "name=\"answer\" value=\"true\">True</input>" +
-                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'false\')\" class=\"answer\" " +
-                    "name=\"answer\" value=\"false\">False</input></div></form>";
-            }
-
-            if(questionType === "INTEGER") {
-                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
-                    "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an integer...\" required>" +
-                    "</div><button type=\"submit\">Submit</button></div></form>";
-            }
-
-            if(questionType === "NUMERIC") {
-                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
-                    "<input type=\"number\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Enter an number...\" step=\"0.01\" required>" +
-                    "</div><button type=\"submit\">Submit</button></div></form>";
-            }
-
-            if(questionType === "MCQ") {
-                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><label for=\"response\"></label>" +
-                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'A\')\" " +
-                    "class=\"answer\" name=\"answer\" value=\"A\">A</input>" +
-                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'B\')\" " +
-                    "class=\"answer\" name=\"answer\" value=\"B\">B</input>" +
-                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'C\')\" " +
-                    "class=\"answer\" name=\"answer\" value=\"C\">C</input>" +
-                    "<button type=\"submit\" onclick=\"answerQuestion(\'" + session + "\', \'D\')\" " +
-                    "class=\"answer\" name=\"answer\" value=\"D\">D</input></div></form>";
-            }
-
-            if(questionType === "TEXT") {
-                challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><div class=\"input-wrapper\"><label for=\"answer\"></label>" +
-                    "<input type=\"text\" class=\"input\" id=\"answer\" name=\"answer\" placeholder=\"Answer here...\" required>" +
-                    "</div><button type=\"submit\">Submit</button></div></form>";
-            }
-
+            console.log("Can be Skipped: " + canBeSkipped);
             console.log("Requires Location?: " + requiresLocation);
-            if(requiresLocation === true) {
-                getLocation(session);
-                intervalID = setInterval(() => { getLocation(session); }, 31000);
-            }
-            else{
-                clearInterval(intervalID);
-            }
-
             console.log("Question index: " + currentQuestionIndex);
             console.log("Score if correct answer: " + correctScore);
             console.log("Score if wrong answer: " + wrongScore);
             console.log("Score if skip to answer: " + skipScore);
 
+            totalScore += correctScore;
+            score(session);
+            buttons.innerHTML = "";
 
-            let form = document.getElementById("form");
-            form.addEventListener("submit", function(event) {
+            // Call skipQuestion function
+            if (canBeSkipped === true) {
+                buttons.innerHTML = "<a onclick=\"skipQuestion(\'" + session + "\')\" class=\"btn\"><b>Skip</b></a>";
+            }
+
+            buttons.innerHTML += "<a href=\"#\" class=\"btn\" id=\"qr-button\"><span class=\"material-icons\">qr_code_scanner</span></a>";
+
+            messageBox.innerHTML = "<p>" + questionText + "</p>";
+
+            if (canBeSkipped === false) {
+                messageBox.innerHTML += "<p class=\"skip_text\">Cannot be skipped!</p>";
+            }
+
+            answerQuestionMessage.innerHTML = "";
+
+            const formSubmitHandler = (event) => {
                 event.preventDefault(); // prevent the form from submitting
-                if(questionType === "INTEGER" || questionType === "NUMERIC" || questionType === "TEXT") {
+                if (questionType === "INTEGER" || questionType === "NUMERIC" || questionType === "TEXT") {
                     const answer = document.getElementById("answer").value;
                     answerQuestion(session, answer);
                 }
-            });
+            };
+
+            const createForm = (formContent) => {
+                challengesList.innerHTML = `<form id="form"><div id="center">${formContent}</div></form>`;
+                let form = document.getElementById("form");
+                form.addEventListener("submit", formSubmitHandler);
+            };
+
+            switch (questionType) {
+                case "BOOLEAN":
+                    createForm(`
+                    <button type="submit" onclick="answerQuestion(\'${session}\', \'true\')" class="answer" name="answer" value="true">True</button>
+                    <button type="submit" onclick="answerQuestion(\'${session}\', \'false\')" class="answer" name="answer" value="false">False</button>
+                `);
+                    break;
+                case "INTEGER":
+                case "NUMERIC":
+                    createForm(`
+                    <div class="input-wrapper"><label for="answer"></label>
+                        <input type="${questionType === "INTEGER" ? "number" : "number"}" class="input" id="answer" name="answer" placeholder="Enter a${questionType === "INTEGER" ? "n integer" : " number"}..." ${questionType === "NUMERIC" ? 'step="0.01"' : ''} required>
+                    </div>
+                    <button type="submit">Submit</button>`);
+                    break;
+                case "MCQ":
+                    createForm(`
+                    <button type="submit" onclick="answerQuestion(\'${session}\', \'A\')" class="answer" name="answer" value="A">A</button>
+                    <button type="submit" onclick="answerQuestion(\'${session}\', \'B\')" class="answer" name="answer" value="B">B</button>
+                    <button type="submit" onclick="answerQuestion(\'${session}\', \'C\')" class="answer" name="answer" value="C">C</button>
+                    <button type="submit" onclick="answerQuestion(\'${session}\', \'D\')" class="answer" name="answer" value="D">D</button>
+                `);
+                    break;
+                case "TEXT":
+                    createForm(`
+                    <div class="input-wrapper"><label for="answer"></label>
+                        <input type="text" class="input" id="answer" name="answer" placeholder="Answer here..." required>
+                    </div>
+                    <button type="submit">Submit</button>`);
+                    break;
+            }
+
+            if (requiresLocation === true) {
+                getLocation(session);
+                intervalID = setInterval(() => { getLocation(session); }, 31000);
+            } else {
+                clearInterval(intervalID);
+            }
+
             document.getElementById('qr-button').addEventListener('click', startQRCodeScanner);
         })
         .catch(error => console.error(error)); // Handle any errors
 }
 
-let cameraIndex = 1; // The index of the selected camera.
-let cameraArray; // An array of all available cameras.
-const videoElement = document.createElement('video');
-const button_qr = document.getElementById('button_qr');
+
 
 function switchCamera() {
     cameraIndex = (cameraIndex + 1) % cameraArray.length;
@@ -239,9 +236,12 @@ function startQRCodeScanner() {
                 // Find the back camera or use the first available camera
                 const backCamera = cameras[1] || cameras[0];
 
+                // Check if the selected camera is the front camera
+                const isFrontCamera = cameras.length > 1 && backCamera === cameras[0];
+
                 scanner = new Instascan.Scanner({
                     video: videoElement,
-                    mirror: cameras.length === 1,
+                    mirror: isFrontCamera, // Set mirror to true for front camera and false for back camera
                 });
                 scanner.start(backCamera);
                 button_qr.innerHTML = '<button id="switchCamera" onclick="switchCamera();">Switch camera</button>';
@@ -261,7 +261,6 @@ function startQRCodeScanner() {
             alert('Camera access has been denied. Please enable your camera or search for a device with a camera.');
         });
 }
-
 function QRScannerStop() {
     if (scanner) {
         scanner.stop();
@@ -437,13 +436,12 @@ function score(sessionId) {
                 console.log("Score: " + score);
                 title.innerHTML = "Score: " + score;
                 if(completed) {
-                    messageBox.innerHTML = "<p style='color: green'>Congratulations! You have completed the treasure " +
-                        "hunt with a score of " + score + "/" + totalScore + "</p>";
+                    messageBox.innerHTML = `<p style='color: green'>Congratulations! You have completed the treasure hunt with a score of ${score}/${totalScore}</p>`;
 
-                    postScore.innerHTML = "<a id=\"fb\"><i class=\"fa-brands fa-square-facebook\"></i><span>Share</span></a>" +
-                        "<a id=\"twitter\"><i class=\"fa-brands fa-square-twitter\"></i><span>Share</span></a>";
+                    postScore.innerHTML = `<a id="fb"><i class="fa-brands fa-square-facebook"></i><span>Share</span></a>
+                    <a id="twitter"><i class="fa-brands fa-square-twitter"></i><span>Share</span></a>`;
 
-                    function shareOnFacebook() {
+                    const shareOnFacebook = () => {
                         const navUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F%20My%20score%20is%20${score}.`;
                         window.open(navUrl , '_blank');
                     }
@@ -451,7 +449,7 @@ function score(sessionId) {
                     const fb = document.getElementById('fb');
                     fb.addEventListener('click', shareOnFacebook);
 
-                    function shareOnTwitter() {
+                    const shareOnTwitter = () => {
                         const navUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=I%20just%20scored%20${score}%20points%20on%20the%20Treasure%20Hunt%20game!%20Can%20you%20beat%20me%3F%20My%20score%20is%20${score}.`;
                         window.open(navUrl , '_blank');
                     }
