@@ -74,8 +74,11 @@ header {
 
 #answerQuestionMessage{
     font-size: larger;
-    margin-top: 2em;
     text-align: center;
+    padding: 10px;
+    width: 200px; /* or any other desired width */
+    margin: 2em auto 0 auto; /* set horizontal margins to auto to center the element */
+    opacity: 0.8;
 }
 
 .loader {
@@ -311,6 +314,22 @@ label {
 
 #postScore a:hover {
     transform: scale(1.2);
+}
+
+.temporary-message {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 20px;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Responsive styles */

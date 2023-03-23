@@ -334,15 +334,17 @@ function answerQuestion(sessionId, answer) {
                 else {
                     if (correct) {
                         console.log("Correct answer! " + message);
-                        answerQuestionMessage.innerHTML = "<p style='color: green'>Correct answer! " + message + "</p>";
                         if (scanner) {
                             QRScannerStop();
                         }
                         questions(sessionId);
+
+                        // Show a temporary message
+                        showTemporaryMessage("Correct answer! Well done", 1500);
                     }
                     else {
                         console.log(message);
-                        answerQuestionMessage.innerHTML = "<p style='color: red'>" + message + "</p>";
+                        answerQuestionMessage.innerHTML = "<p style='color: red; background-color: #FFFFFF'>" + message + "</p>";
                     }
                 }
                 console.log("Score adjustment: " + scoreAdjustment);
@@ -353,6 +355,18 @@ function answerQuestion(sessionId, answer) {
             }
         })
         .catch(error => console.error(error));
+}
+
+function showTemporaryMessage(message, duration) {
+    const tempMessageDiv = document.createElement("div");
+    tempMessageDiv.className = "temporary-message";
+    tempMessageDiv.innerHTML = message;
+
+    document.body.appendChild(tempMessageDiv);
+
+    setTimeout(() => {
+        document.body.removeChild(tempMessageDiv);
+    }, duration);
 }
 
 /**
