@@ -1,5 +1,4 @@
 const TH_BASE_URL = "https://codecyprus.org/th/api/"; // the true API base url
-const TH_TEST_URL = "https://codecyprus.org/th/test-api/"; // the test API base url
 const url = "https://alexisd02.github.io/CO1111/"; // Replace with the actual URL
 
 const challengesList = document.getElementById('treasureHunts');
@@ -16,9 +15,13 @@ const button_qr = document.getElementById('button_qr');
 
 let scanner = null, intervalID, map, locationArray = [], totalScore = 0, cameraIndex = 1, cameraArray;
 /**
- * An asynchronous function to realize the functionality of getting the available 'treasure hunts' (using /list) and
- * processing the result to update the HTML with a bullet list with the treasure hunt names and descriptions. Also,
- * for each treasure hunt in the bullet list, a link is shown to trigger another function, the 'select'.
+ * Fetches the list of treasure hunts from the server and displays them on the page.
+ * The function sends a request to the server to get the list of treasure hunts, then
+ * parses the JSON response and iterates through the treasure hunts to create an HTML
+ * list of the treasure hunts. Each treasure hunt item is shown with an individual DIV
+ * element, with the treasure hunt name in bold and the description in italics.
+ * The function also checks if the current date and time is within the start and end
+ * times of the treasure hunt, and if not, disables the button for that treasure hunt.
  */
 function getChallenges() {
     const listUrl = TH_BASE_URL + `list`;
@@ -62,10 +65,10 @@ function getChallenges() {
 getChallenges();
 
 /**
- * This function is called when a particular treasure hunt is selected. This is merely a placeholder as you're expected
- * to realize this function-or an equivalent-to perform the necessary actions after a treasure hunt is selected.
+ * Selects a treasure hunt with the given UUID and treasure name, and prompts the user for their name.
+ * @param {string} uuid - The UUID of the selected treasure hunt.
+ * @param {string} treasureName - The name of the selected treasure hunt.
  */
-
 function select(uuid, treasureName) {
     console.log("Selected treasure hunt with UUID: " + uuid);
     console.log(treasureName);
@@ -83,6 +86,12 @@ function select(uuid, treasureName) {
     form.addEventListener("submit", submitName.bind(null, uuid, treasureName));
 }
 
+/**
+ * Submits the player's name and starts the treasure hunt with the given UUID and treasure name.
+ * @param {string} uuid - The UUID of the selected treasure hunt.
+ * @param {string} treasureName - The name of the selected treasure hunt.
+ * @param {Event} event - The form submit event.
+ */
 function submitName(uuid, treasureName, event) {
     event.preventDefault(); // prevent the form from submitting
     const playerName = document.getElementById("name").value;
@@ -90,6 +99,13 @@ function submitName(uuid, treasureName, event) {
     start(uuid, treasureName, playerName, error);
 }
 
+/**
+ * Starts the treasure hunt with the given UUID, treasure name, and player name, and displays any errors.
+ * @param {string} uuid - The UUID of the selected treasure hunt.
+ * @param {string} treasureName - The name of the selected treasure hunt.
+ * @param {string} playerName - The name of the player.
+ * @param {HTMLElement} error - The HTML element to display any errors.
+ */
 function start(uuid, treasureName, playerName, error) {
     const startUrl = TH_BASE_URL + `start?player=${playerName}&app=${treasureName}&treasure-hunt-id=${uuid}`;
 
@@ -109,6 +125,13 @@ function start(uuid, treasureName, playerName, error) {
         .catch(error => console.error(error));
 }
 
+/**
+ * Fetches a question from the API and displays it on the page.
+ * Handles different question types and creates appropriate input elements for each type.
+ * If the question can be skipped, adds a skip button.
+ * If the question requires location, calls the getLocation function and sets an interval to update the location.
+ * @param {string} session - The session ID.
+ */
 function questions(session) {
     // Define the API endpoint URL
 
@@ -212,17 +235,29 @@ function questions(session) {
 }
 
 
-
+/**
+ * Switches the camera used for scanning QR codes.
+ * If there are multiple cameras available, it cycles through them.
+ */
 function switchCamera() {
     cameraIndex = (cameraIndex + 1) % cameraArray.length;
     scanner.start(cameraArray[cameraIndex]);
 }
 
+/**
+ * Checks if the given content is a valid URL.
+ * @param {string} content - The content to be checked for URL validity.
+ * @returns {boolean} - Returns true if the content is a valid URL, false otherwise.
+ */
 function isUrl(content) {
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
     return urlRegex.test(content);
 }
 
+/**
+ * Starts the QR code scanner using the available camera(s).
+ * If a scanner is already running, it stops the scanner.
+ */
 function startQRCodeScanner() {
     if (scanner) {
         QRScannerStop();
@@ -261,6 +296,11 @@ function startQRCodeScanner() {
             alert('Camera access has been denied. Please enable your camera or search for a device with a camera.');
         });
 }
+
+/**
+ * Stops the QR code scanner if it is running.
+ * Clears the scanner instance, video element, and switch camera button.
+ */
 function QRScannerStop() {
     if (scanner) {
         scanner.stop();
@@ -270,6 +310,14 @@ function QRScannerStop() {
     }
 }
 
+/**
+ * Submits the user's answer to the current question in the treasure hunt game.
+ * If the answer is correct, the function proceeds to the next question or
+ * displays the leaderboard if the game is completed. If the answer is incorrect,
+ * an error message is displayed. The user's score is also updated accordingly.
+ * @param {string} sessionId - The unique identifier for the user's game session.
+ * @param {string} answer - The user's answer to the current question.
+ */
 function answerQuestion(sessionId, answer) {
     const answerUrl = TH_BASE_URL + `answer?session=${sessionId}&answer=${encodeURIComponent(answer)}`;
 
@@ -307,17 +355,11 @@ function answerQuestion(sessionId, answer) {
         .catch(error => console.error(error));
 }
 
-/*
-*To add the location updates to the minimap using Leaflet library, you can follow these steps:
-
-* Define a global variable map to store the map object and initialize it in the initMap() function only if it is undefined.
-* Define a global variable locationArray to store the locations visited by the user.
-* In the getLocation() function, push the new location to the locationArray and call the updateMap()
-* function to add the location to the minimap.
-* Define the updateMap() function to draw the path between the locations and update the map with markers and the path.
-* In the initMap() function, initialize the map and add the path layer to it.
-
-*/
+/**
+ * Initializes the map and adds a polyline and markers for each location in the locationArray.
+ * The map is centered and zoomed to fit the bounds of the polyline.
+ * The markers display a permanent tooltip with the location index.
+ */
 function initMap() {
     if (!map) {
         map = L.map('map').setView([0, 0], 2);
@@ -336,12 +378,15 @@ function initMap() {
         // display the label permanently at the top of the marker with a 14 pixel leftward and 10 pixel upward offset.
     });
 }
-
-
 // hide the map initially
 document.getElementById("map").style.display = "none";
 
-// Get location
+/**
+ * Checks if the browser supports geolocation and requests the user's location.
+ * If the user grants permission, it calls getLocationData with the sessionId.
+ * If the user denies permission or geolocation is not supported, it displays an error message.
+ * @param {string} sessionId - The session ID to be used in the getLocationData function.
+ */
 function getLocation(sessionId) {
     if (!navigator.permissions || !navigator.permissions.query) {
         console.error('Geolocation is not supported by your browser.');
@@ -369,6 +414,12 @@ function getLocation(sessionId) {
     });
 }
 
+/**
+ * Gets the user's current location and adds it to the locationArray.
+ * Sends the location data to the server using a fetch request with the provided sessionId.
+ * If there is an error getting the location or sending the data, it displays an error message.
+ * @param {string} sessionId - The session ID to be used in the fetch request URL.
+ */
 function getLocationData(sessionId) {
     navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
@@ -390,7 +441,12 @@ function getLocationData(sessionId) {
     });
 }
 
-// Skip question function
+/**
+ * Skips the current question in the treasure hunt game.
+ * If the user confirms to skip the question, a request is sent to the server to update the game state.
+ * If the game is completed, the leaderboard is displayed. Otherwise, the next question is loaded.
+ * @param {string} sessionId - The unique identifier of the user's game session.
+ */
 function skipQuestion(sessionId) {
 
     if(confirm("Are you sure you want to skip the current question?")) {
@@ -420,6 +476,11 @@ function skipQuestion(sessionId) {
     }
 }
 
+/**
+ * This function fetches the score of a player in a treasure hunt game session and displays it.
+ * It also allows the player to share their score on Facebook and Twitter if the game is completed.
+ * @param {string} sessionId - The unique identifier of the game session.
+ */
 function score(sessionId) {
 
     const scoreURL = TH_BASE_URL + `score?session=${sessionId}`;
@@ -463,6 +524,13 @@ function score(sessionId) {
         .catch(error => console.error(error));
 }
 
+/**
+ * Displays the leaderboard for a given treasure hunt session.
+ * Fetches the leaderboard data from the server and updates the HTML elements
+ * to show the leaderboard table with player rankings, names, scores, and completion times.
+ * Also provides options to reload the leaderboard or play the game again.
+ * @param {string} sessionId - The session ID of the treasure hunt.
+ */
 function displayLeaderboard(sessionId) {
 
     const leaderboardURL = TH_BASE_URL + `leaderboard?session=${sessionId}&sorted&limit=10`;
