@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testing framework</title>
-    <link rel="stylesheet" href="css/test_css.css"/>
+    <link rel="stylesheet" href="css/test_css.css"/> <!-- Link to the external CSS file for styling -->
 </head>
 <body>
-
 
 <h1>Testing Question page</h1>
 
 <h2>How it works:</h2>
 
 <ul>
+    <!-- Instructions on how the test works -->
     <li>Choose the Type of Question.</li>
     <li>Run Test button to show results.</li>
     <li>Clear button to clear results</li>
@@ -22,13 +22,15 @@
 
 <h2>Unit Tests</h2>
 
+<!-- Information about the Testing API -->
 <p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
 <div id="loader" class="loader" hidden></div>
 
-<!--Handle Test Question-->
+<!-- Handle Test Question -->
 <h3>Testing <code>/question</code></h3>
 
-<select id="question-type">
+<!-- Dropdown to select question type -->
+<label for="question-type"></label><select id="question-type">
     <option value="BOOLEAN">BOOLEAN</option>
     <option value="INTEGER">INTEGER</option>
     <option value="NUMERIC">NUMERIC</option>
@@ -36,26 +38,31 @@
     <option value="TEXT">TEXT</option>
 </select>
 
+<!-- Buttons to run the test and clear the results -->
 <button id="buttonTestQuestion" class="button" onclick="handleTestQuestion()">Run Test</button>
 <button id="buttonClearQuestion" class="button" onclick="clearTestQuestion()">Clear</button>
 
 <hr>
 
+<!-- Container to display the questions -->
 <div id="buttons">
     Questions to show up here...
 </div>
 
+<!-- Container to display any messages -->
 <div id="message"></div>
 
+<!-- Container to display the answer question message -->
 <div id="answerQuestionMessage"></div>
 
+<!-- Container for treasure hunts (not used in this context) -->
 <div id="treasureHunts"></div>
 
 <hr>
 
-<!--Load the API JavaScript-->
+<!-- Load the API JavaScript -->
 <!--<script src="th-api.js"></script>-->
-<script src="js/th-test-api.js" defer></script>
+<script src="js/th-test-api.js" defer></script> <!-- Link to the external JavaScript file to handle the test logic -->
 
 </body>
 </html>
