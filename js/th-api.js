@@ -75,7 +75,7 @@ function select(uuid, treasureName) {
 
     buttons.innerHTML = "";
     messageBox.innerHTML = "<p>We are looking for the '" + treasureName + "' treasure. Now tell us your name, " +
-        "and we are ready to go!</p>";
+        "and we are ready to go!</p><p style=\"color:red\">Make sure you <u>ALLOW</u> Geolocation in your browser!</p>";
     challengesList.innerHTML = "<form id=\"form\"><div id=\"center\"><label for=\"name\"><b>Name</b></label>" +
         "<br/><input type=\"text\" class=\"input\" id=\"name\" name=\"name\" placeholder=\"Enter your name\" required><br/>" +
         "<div id=\"error\"></div><button type=\"submit\">Submit</button></div></form>";
