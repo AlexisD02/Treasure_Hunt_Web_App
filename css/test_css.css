@@ -140,4 +140,6 @@ th, td { border-bottom: 1px solid gray;
     text-align: center;
 }
 
-
+.link-font {
+    font-size: medium;
+}
