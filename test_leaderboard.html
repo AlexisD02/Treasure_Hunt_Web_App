@@ -4,16 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Testing framework</title>
+  <!-- Linking the external stylesheet file -->
   <link rel="stylesheet" href="css/test_css.css"/>
 </head>
 <body>
 
-
+<!-- Main heading for the Testing Leaderboard page -->
 <h1>Testing Leaderboard page</h1>
 
+<!-- Subheading and explanation of how the leaderboard works -->
 <h2>How it works:</h2>
-
 <ul>
+  <!-- List of instructions for the users -->
   <li>Enter a number to determine the size of the leaderboard.</li>
   <li>If no input from the user is provided, then the test leaderboard will produce 42 players.</li>
   <li>Check a box to view the testing leaderboard either sorted or not.</li>
@@ -22,19 +24,22 @@
   <li>Clear button to clear results</li>
 </ul>
 
+<!-- Section for the Unit Tests and the link to the testing API -->
 <h2>Unit Tests</h2>
-
 <p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
+
+<!-- Loader for the AJAX request, hidden by default -->
 <div id="loader" class="loader" hidden></div>
 
-<!--Handle Test Question-->
+<!-- Section for testing the /leaderboard endpoint -->
 <h3>Testing <code>/leaderboard</code></h3>
-
 <form>
   <label for="leaderboard-input">Enter a number:</label>
+  <!-- Number input for the leaderboard size -->
   <input type="number" id="leaderboard-input">
 </form>
 
+<!-- Radio buttons for sorting the leaderboard -->
 <input type="radio" id="true" name="myOption" value="true" checked>
 <label for="true">True</label>
 <br>
@@ -42,21 +47,25 @@
 <label for="false">False</label>
 <br>
 
+<!-- Buttons for running the test and clearing the results -->
 <button id="buttonTestQuestion" class="button" onclick="handleTestLeaderboard()">Run Test</button>
 <button id="buttonClearQuestion" class="button" onclick="clearTestLeaderboard()">Clear</button>
 
+<!-- Divider line -->
 <hr>
 
+<!-- Placeholder for the leaderboard -->
 <div id="leaderboard">
   Leaderboard to show up here...
 </div>
 
+<!-- Table for displaying the leaderboard data -->
 <table id="leaderboard-data"></table>
 
+<!-- Divider line -->
 <hr>
 
-
-<!--Load the API JavaScript-->
+<!-- Load the external JavaScript files -->
 <!--<script src="th-api.js"></script>-->
 <script src="js/th-test-api.js"></script>
 

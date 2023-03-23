@@ -8,19 +8,22 @@
 </head>
 <body>
 
+    <!-- Main heading for the Testing List page -->
     <h1>Testing Lists page</h1>
-
+    <!-- Subheading and explanation of how the list works -->
     <h2>How it works:</h2>
 
     <ul>
-      <li>Enter a number to view sample treasure hunts.</li>
-      <li>By default if the value is negative or more than 10, the result will be 10 treasure hunts.</li>
-      <li>Run Test button to show results.</li>
-      <li>Clear button to clear results.</li>
+        <!-- Instructions on how the test works -->
+        <li>Enter a number to view sample treasure hunts.</li>
+        <li>By default if the value is negative or more than 10, the result will be 10 treasure hunts.</li>
+        <li>Run Test button to show results.</li>
+        <li>Clear button to clear results.</li>
     </ul>
 
     <h2>Unit Tests</h2>
 
+    <!-- Information about the Testing API -->
     <p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
     <div id="loader" class="loader" hidden></div>
 
@@ -32,9 +35,11 @@
 
     <hr>
 
+    <!-- Buttons to run the test and clear the results -->
     <button id="buttonTestList" class="button" onclick="handleTestList()">Run Test</button>
     <button id="buttonClearList" class="button" onclick="document.getElementById('treasureHunts').innerHTML = 'The results of the test to show up here...';">Clear</button>
 
+    <!-- Container to display the results of the test -->
     <div id="treasureHunts" class="testMessage">
         The results of the test to show up here...
     </div>
@@ -43,7 +48,7 @@
 
     <!--Load the API JavaScript-->
     <!--<script src="th-api.js"></script>-->
-    <script src="js/th-test-api.js"></script>
+    <script src="js/th-test-api.js"></script> <!-- Link to the external JavaScript file to handle the test logic -->
 
 </body>
 </html>

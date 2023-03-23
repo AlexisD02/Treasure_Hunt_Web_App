@@ -1,54 +1,83 @@
 <!DOCTYPE html>
+<!-- The document type declaration for HTML5 -->
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Testing framework</title>
-  <link rel="stylesheet" href="css/test_css.css"/>
-</head>
-<body>
+<!-- The root element of the HTML page, with the language set to English -->
 
+<head>
+  <!-- The head element contains meta information and links to stylesheets and scripts -->
+  <meta charset="UTF-8">
+  <!-- Specifies the character encoding for the HTML document -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Makes the website responsive by setting the viewport to the device's width and initial zoom level -->
+
+  <title>Testing framework</title>
+  <!-- The title of the HTML document -->
+
+  <link rel="stylesheet" href="css/test_css.css"/>
+  <!-- Linking to an external stylesheet for styling the HTML document -->
+</head>
+
+<body>
+<!-- The body element contains the content of the HTML document -->
 
 <h1>Testing Score page</h1>
+<!-- Main heading for the webpage -->
 
 <h2>How it works:</h2>
+<!-- Subheading explaining the functionality of the webpage -->
 
 <ul>
+  <!-- Unordered list explaining how the testing score page works -->
   <li>Enter a number to determine the score of the player.</li>
   <li>Run Test button to show results.</li>
   <li>Clear button to clear results</li>
 </ul>
 
 <h2>Unit Tests</h2>
+<!-- Subheading for the unit tests section -->
 
 <p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
-<div id="loader" class="loader" hidden></div>
+<!-- Paragraph with a link to the testing API -->
 
-<!--Handle Test Question-->
+<div id="loader" class="loader" hidden></div>
+<!-- Hidden loader element to show when waiting for API response -->
+
+<!-- Handle Test Question -->
 <h3>Testing <code>/score</code></h3>
+<!-- Subheading for testing the /score endpoint -->
 
 <form>
+  <!-- Form element for accepting the user's input -->
   <label for="user-score">Enter a number:</label>
+  <!-- Label for the input field -->
   <input type="number" id="user-score" name="numberInput">
+  <!-- Input field for entering a numeric value -->
 </form>
 
 <button id="buttonTestQuestion" class="button" onclick="handleTestScore()">Run Test</button>
+<!-- Button for running the test and calling the handleTestScore function -->
+
 <button id="buttonClearQuestion" class="button" onclick="document.getElementById('logo').innerHTML = 'Score to show up here...'">Clear</button>
+<!-- Button for clearing the results by setting the 'logo' div content back to the default message -->
 
 <hr>
+<!-- Horizontal rule for separating sections -->
 
 <div id="logo">
+  <!-- Div element where the test results will be displayed -->
   Score to show up here...
 </div>
 
 <div id="message"></div>
-
+<!-- Div element for displaying additional messages -->
 
 <hr>
+<!-- Horizontal rule for separating sections -->
 
-<!--Load the API JavaScript-->
+<!-- Load the API JavaScript -->
 <!--<script src="th-api.js"></script>-->
 <script src="js/th-test-api.js"></script>
+<!-- Link to the external JavaScript file for handling the testing API -->
 
 </body>
 </html>
