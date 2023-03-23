@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Testing framework</title>
   <link rel="stylesheet" href="css/test_css.css"/>
 </head>
@@ -16,7 +17,6 @@
   <li>Check True or False to view corresponding text.</li>
   <li>Run Test button to show results.</li>
   <li>Clear button to clear results</li>
-  <li>If both boxes are checked, then by default the result is true</li>
 </ul>
 
 <h2>Unit Tests</h2>
@@ -27,17 +27,12 @@
 <!--Handle Test Answer-->
 <h3>Testing <code>/answer</code></h3>
 
-<form>
-  <label for="answer-true">Answer:
-    <input type="checkbox" id="answer-true" value="true">
-    True
-  </label>
-  <br>
-  <label for="answer-false">Answer:
-    <input type="checkbox" id="answer-false" value="false">
-    False
-  </label>
-</form>
+<input type="radio" id="true" name="myOption" value="true" checked>
+<label for="true">True</label>
+<br>
+<input type="radio" id="false" name="myOption" value="false">
+<label for="false">False</label>
+<br>
 
 <button id="buttonTestQuestion" class="button" onclick="handleTestAnswer()">Run Test</button>
 <button id="buttonClearQuestion" class="button" onclick="clearTestAnswer()">Clear</button>

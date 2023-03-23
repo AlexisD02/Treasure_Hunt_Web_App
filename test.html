@@ -2,109 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testing framework</title>
     <link rel="stylesheet" href="css/test_css.css"/>
 </head>
 <body>
 
 
-    <h1>Testing page</h1>
+    <h1 class="style-heading">Testing page</h1>
 
-    <p>This is the page describing how this app was tested. Testing usually comprises of <i>verification</i> and <i>validation</i>.</p>
+    <h4 class="style-subheading" style="text-align: center">This is the page describing how this app was tested. Testing usually comprises of <i>verification</i> and <i>validation</i>.</h4>
 
-    <p>As an example of verification you can include Unit Tests (see below), and as an example of validation we </p>
+    <div class="style-div">
+        <h2 class="style-heading">User Acceptance Plan</h2>
 
-    <h2>User Acceptance Plan</h2>
+        <h4 class="style-subheading">Our User Acceptance plan was designed to ensure that our Treasure Hunt web application meets the needs and expectations of our target users. The plan consisted of the following steps:</h4>
 
-    <p>Here describe the User Acceptance plan you formed, and justify how your app performed to it.</p>
+        <ul class="style-list">
+            <li>Define user requirements: We gathered information about our target users and their needs, preferences, and expectations for a treasure hunt web application. This helped us to identify the key features and functionalities that our app should include.</li>
+            <li>Develop test scenarios: Based on the user requirements, we developed a set of test scenarios that covered all the key features and functionalities of our app. These scenarios were designed to simulate real-world usage of the app and to test its performance under various conditions.</li>
+            <li>Conduct user testing: We invited a group of target users to participate in the user testing process. They were asked to complete the test scenarios using our app and to provide feedback on their experience. This allowed us to identify any issues or areas for improvement in the app.</li>
+            <li>Analyse test results: We analysed the results of the user testing, including the feedback provided by the participants. This helped us to identify any patterns or trends in the issues encountered and to prioritize the areas for improvement.</li>
+            <li>Implement improvements: Based on the analysis of the test results, we made the necessary improvements to our app. This included fixing any bugs or issues, as well as making enhancements to the user interface and overall user experience.</li>
+            <li>Repeat testing and analysis: We conducted additional rounds of user testing and analysis to ensure that the improvements made to our app were effective and that no new issues had been introduced.</li>
+            <li>Finalize the app: Once we were satisfied that our app met the needs and expectations of our target users, we finalized the app and prepared it for release.</li>
 
-    <h2>Usability Assessment</h2>
-
-    <p>Assess your app's performance when assessed using the standard Nielsen's Heuristics</p>
-
-    <h2>Unit Tests</h2>
-
-    <p>The Unit Tests make use of the corresponding Testing API available at <a href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</p>
-    <div id="loader" class="loader" hidden></div>
-
-    <h3>Testing <code>/list</code></h3>
-
-    <button id="buttonTestList" class="button" onclick="handleTestList()">Run Test</button>
-    <button id="buttonClearList" class="button" onclick="document.getElementById('tH').innerHTML = 'The results of the test to show up here...';">Clear</button>
-
-    <div id="tH" class="testMessage">
-        The results of the test to show up here...
+        </ul>
     </div>
 
-    <hr>
+    <div class="style-div">
+        <h2 class="style-heading">Usability Assessment</h2>
 
-    <h3>Testing <code>/start</code></h3>
+        <h4 class="style-subheading">When assessed using Nielsen's Heuristics, our Treasure Hunt web application performed well in the following areas:</h4>
 
-    <button id="buttonTestStart" class="button" onclick="handleTestStart()">Run Test</button>
-    <button id="buttonClearStart" class="button" onclick="document.getElementById('message').innerHTML = 'Messages to show up here...'">Clear</button>
+        <ul class="style-list">
+            <li>Visibility of system status: Our app provides clear feedback to users about the current status of the game, including their score, progress, and any messages or hints related to the current question.</li>
+            <li>Match between the system and the real world: The app uses familiar language and concepts that are easily understood by users, such as treasure hunts, questions, and answers.</li>
+            <li>User control and freedom: Users have the ability to skip questions if they are unable to answer them, and they can also choose to play again or view the leaderboard at the end of the game.</li>
+            <li>Consistency and standards: Our app follows consistent design patterns and conventions, making it easy for users to navigate and interact with the app.</li>
+            <li>Error prevention: The app includes input validation and error messages to help users avoid mistakes and to provide guidance on how to correct any errors.</li>
+            <li>Recognition rather than recall: The app provides hints and reminders to help users remember information and complete tasks more easily.</li>
+            <li>Flexibility and efficiency of use: Our app is designed to be easy to use for both novice and experienced users, with a simple interface and clear instructions.</li>
+            <li>Aesthetic and minimalist design: The app features a clean and visually appealing design that focuses on the essential elements of the game, without any unnecessary distractions.</li>
+            <li>Help and documentation: While our app is designed to be intuitive and easy to use, we could improve the help and documentation available to users.</li>
+        </ul>
 
-    <hr>
+        <h4>Overall, our Treasure Hunt web application performed well in meeting the needs and expectations of our target users, as demonstrated by the positive feedback received during user testing. By addressing the areas for improvement identified through Nielsen's Heuristics, we can further enhance the user experience and ensure the continued success of our app.</h4>
 
-    <div id="message" class="errorMessage">
-        Messages to show up here...
+        <h4>The Treasure Hunt App uses the user's location, QR scanner, and map pathway to enhance the gameplay experience. Here's a brief overview of each feature:</h4>
+
+        <ul>
+            <li>Location: The app uses the user's geolocation to determine their position and provide location-based hints and challenges. This adds an element of exploration and adventure to the game, as users must physically visit specific locations to find clues and solve puzzles. The app uses the HTML5 Geolocation API to access the user's location data, and the Leaflet library to display the user's path on a map.</li>
+            <li>QR Scanner: The app includes a QR code scanner that allows users to scan QR codes to reveal hidden information or submit answers to questions. This adds an interactive element to the game, as users must search for and scan QR codes to progress through the treasure hunt. The app uses the Instascan library to implement the QR code scanner functionality. </li>
+            <li>Map Pathway: As users progress through the treasure hunt, their path is displayed on a map using the Leaflet library. This provides a visual representation of the user's journey and allows them to see the locations they have visited during the game. The map also displays markers for each location, with tooltips showing the order in which the locations were visited.</li>
+        </ul>
+
+        <h4>These features work together to create an engaging and immersive gameplay experience, encouraging users to explore their surroundings and solve challenging puzzles to complete the treasure hunt.</h4>
+
     </div>
 
-    <hr>
 
-    <h3>Testing <code>/question</code></h3>
+    <div class="style-div">
+        <h2 class="style-heading">Unit Tests</h2>
 
-    <button id="buttonTestQuestion" class="button" onclick="handleTestQuestion()">Run Test</button>
-    <button id="buttonClearQuestion" class="button" onclick="document.getElementById('questions').innerHTML = 'Questions to show up here...'">Clear</button>
+        <h4 class="style-subheading">The Unit Tests make use of the corresponding Testing API available at <a class="link-font" href="https://codecyprus.org/th/testing" target="_blank">https://codecyprus.org/th/testing</a>.</h4>
+        <div id="loader" class="loader" hidden></div>
 
-    <hr>
+        <br>
 
-    <div id="questions" class="errorQuestion">
-        Questions to show up here...
+        <h4 class="style-heading">Test App Functionality</h4>
+        <br>
+        <a href="testing_navigator.html" class="link_buttons"><b>Testing</b></a>
+
     </div>
 
-    <hr>
-
-    <h3>Testing <code>/answer</code></h3>
-
-    <button id="buttonTestAnswer" class="button" onclick="handleTestAnswer()">Run Test</button>
-    <button id="buttonClearAnswer" class="button" onclick="document.getElementById('answers').innerHTML = 'Answers to show up here...'">Clear</button>
-
-    <hr>
-
-    <div id="answers" class="errorAnswer">
-        Answers to show up here...
-    </div>
-
-    <hr>
-
-    <h3>Testing <code>/score</code></h3>
-
-    <button id="buttonTestScore" class="button" onclick="handleTestScore()">Run Test</button>
-    <button id="buttonClearScore" class="button" onclick="document.getElementById('score').innerHTML = 'Score to show up here...'">Clear</button>
-
-    <hr>
-
-    <div id="score" class="errorScore">
-        Score to show up here...
-    </div>
-
-    <hr>
-
-    <h3>Testing <code>/leaderboard</code></h3>
-
-    <button id="buttonTestLeaderboard" class="button" onclick="handleTestLeaderboard()">Run Test</button>
-    <button id="buttonClearLeaderboard" class="button" onclick="document.getElementById('leaderboard').innerHTML = 'Leaderboard to show up here...'">Clear</button>
-
-    <hr>
-
-    <div id="leaderboard" class="errorLeaderboard">
-        Leaderboard to show up here...
-    </div>
-
-    <hr>
 
     <!--Load the API JavaScript-->
-    <script src="th-api.js"></script>
+    <!--<script src="th-api.js"></script>-->
     <script src="th-test-api.js"></script>
 
 </body>

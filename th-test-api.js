@@ -237,6 +237,8 @@ let answer_test_cases = [
 
 // Test Answer
 function handleTestAnswer() {
+    let selectedOption = document.querySelector('input[name="myOption"]:checked');
+
     let answer = document.getElementById('answer');
     answer.innerHTML = "";
 
@@ -246,20 +248,13 @@ function handleTestAnswer() {
     let treasure_hunts = document.getElementById('treasureHunts');
     treasure_hunts.innerHTML = "";
 
-
-    let answer_true = document.getElementById('answer-true');
-    let answer_false = document.getElementById('answer-false');
-
     let test_answerUrl;
 
-    if (answer_true.checked) {
+    if (selectedOption.value === "true") {
         test_answerUrl = TH_TEST_URL + `answer?correct&completed=true`;
     }
-    else if (answer_false.checked) {
+    else if (selectedOption.value === "false") {
         test_answerUrl = TH_TEST_URL + `answer?completed=true`;
-    }
-    else {
-        answer.innerHTML = "Please check a box.";
     }
 
     fetch(test_answerUrl)
@@ -308,7 +303,6 @@ function handleTestScore() {
     let user_score = document.getElementById('user-score').value;
 
     let messageBox = document.getElementById('message');
-    //score(true, "random-session", user_score);
 
     let test_scoreUrl = TH_TEST_URL + `score?score=${user_score}`;
 
@@ -337,6 +331,9 @@ function handleTestScore() {
 // Test leaderboard
 function handleTestLeaderboard() {
     let leaderboard_input = document.getElementById('leaderboard-input').value; // Get input from the user
+
+    let selected_option = document.querySelector('input[name="myOption"]:checked');
+
     let leaderboard_data = document.getElementById('leaderboard-data');
 
     let sort_true = document.getElementById('leaderboard-sort-true');
@@ -346,14 +343,12 @@ function handleTestLeaderboard() {
 
     // Check checked if either true of false box is selected
     let test_leaderboard_api
-    if (sort_true.checked) {
+
+    if (selected_option.value === "true") {
         test_leaderboard_api = `https://codecyprus.org/th/test-api/leaderboard?sorted&hasPrize&size=${leaderboard_input}`;
     }
-    else if (sort_false.checked) {
+    else if (selected_option.value === "false") {
         test_leaderboard_api = `https://codecyprus.org/th/test-api/leaderboard?sorted=false&hasPrize&size=${leaderboard_input}`;
-    }
-    else {
-        leaderboard_id.innerHTML = "Please check a box.";
     }
 
     // Fetch information from the test api
@@ -387,6 +382,8 @@ function handleTestLeaderboard() {
                 });
             }
         })
+
+    leaderboard_data.innerHTML = "";
 }
 
 // Clear leaderboard when 'Clear' button is clicked
