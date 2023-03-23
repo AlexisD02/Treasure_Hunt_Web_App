@@ -237,6 +237,8 @@ let answer_test_cases = [
 
 // Test Answer
 function handleTestAnswer() {
+    let selectedOption = document.querySelector('input[name="myOption"]:checked');
+
     let answer = document.getElementById('answer');
     answer.innerHTML = "";
 
@@ -246,20 +248,13 @@ function handleTestAnswer() {
     let treasure_hunts = document.getElementById('treasureHunts');
     treasure_hunts.innerHTML = "";
 
-
-    let answer_true = document.getElementById('answer-true');
-    let answer_false = document.getElementById('answer-false');
-
     let test_answerUrl;
 
-    if (answer_true.checked) {
+    if (selectedOption.value === "true") {
         test_answerUrl = TH_TEST_URL + `answer?correct&completed=true`;
     }
-    else if (answer_false.checked) {
+    else if (selectedOption.value === "false") {
         test_answerUrl = TH_TEST_URL + `answer?completed=true`;
-    }
-    else {
-        answer.innerHTML = "Please check a box.";
     }
 
     fetch(test_answerUrl)
@@ -308,7 +303,6 @@ function handleTestScore() {
     let user_score = document.getElementById('user-score').value;
 
     let messageBox = document.getElementById('message');
-    //score(true, "random-session", user_score);
 
     let test_scoreUrl = TH_TEST_URL + `score?score=${user_score}`;
 
@@ -387,6 +381,8 @@ function handleTestLeaderboard() {
                 });
             }
         })
+
+    leaderboard_data.innerHTML = "";
 }
 
 // Clear leaderboard when 'Clear' button is clicked
