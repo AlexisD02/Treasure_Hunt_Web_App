@@ -50,7 +50,7 @@ header {
 
 /* CSS for the welcome message */
 .welcome-message {
-    margin: 25% 5% 25% 5%;
+    margin: 16% 5% 16% 5%;
     color: var(--black);
     background-color: rgba(255, 255, 255, 0.9); /* 90% opacity white */
     text-align: justify;
@@ -235,7 +235,7 @@ a:hover {
 
 @media only screen and (max-width: 600px) {
     .welcome-message {
-        font-size: 20px;
+        font-size: 18px;
     }
     .team-member {
         display: block;
