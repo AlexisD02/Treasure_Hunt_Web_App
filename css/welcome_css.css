@@ -1,5 +1,5 @@
 :root {
-    --light_gray: #D3D3D3;
+    --light_gray: #E5C682;
     --white: #FFFFFF;
     --black: #000000;
 }
@@ -31,7 +31,7 @@ header {
     align-items: center;
     color: var(--white);
     padding: 10px;
-    background-color: rgba(211, 211, 211, 0.7);
+    background-color: rgba(229, 198, 130, 0.7);
 }
 
 .logo {
@@ -67,6 +67,7 @@ header {
     text-align: center;
 }
 
+
 a {
     text-decoration: none;
     display: inline-block;
@@ -80,13 +81,20 @@ a:hover {
 
 .next-button {
     font-size: 150%;
-    background-color: rgba(244, 81, 30, 0.8);
+    background-color: rgba(229, 198, 130, 0.8);
     color: var(--black);
     padding: 10% 15%;
     border-radius: 10px;
     border: 2px solid var(--black);
     box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
     transition: 0.3s;
+}
+
+.next-button:hover{
+    background-color: rgba(229, 198, 130, 1);
+    color: var(--white);
+    transform: scale(1.05);
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.6);
 }
 
 .next-button:hover {opacity: 1}

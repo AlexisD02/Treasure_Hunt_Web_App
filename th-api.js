@@ -44,7 +44,7 @@ function getChallenges() {
                             "Ends: " + timeLeftToEnd + "</li></button>";// and the description in italics in the following lin
                     }
                     else if(currentDateTime.getTime() < startsOn){
-                        listHtml += "<button class='list' id=\"disabled\"><li>" + // each treasure hunt item is shown with an individual DIV element
+                        listHtml += "<button class='list' id=\"disabled\" onclick=\"alert('The current treasure hunt is temporarily unavailable.')\"><li>" + // each treasure hunt item is shown with an individual DIV element
                             "<b id='bold_text'>" + name + "</b><br/><br/>" + // the treasure hunt name is shown in bold...
                             "<i>" + description + "</i><br/>" + // and the description in italics in the following line
                             "Starts: " + timeLeftToStart + "</li></button>";// and the description in italics in the following lin
