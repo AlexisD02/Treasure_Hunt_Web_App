@@ -70,10 +70,11 @@ Stay tuned for updates and new challenges!
 
 ### App Screenshots
 
-![Screenshot_1](/screenshots/Screenshot 2023-03-23 144521.png?raw=true "Optional Title")
-![Screenshot_2](/screenshots/Screenshot 2023-03-23 144549.png?raw=true "Optional Title")
-![Screenshot_3](/screenshots/Screenshot 2023-03-23 144618.png?raw=true "Optional Title")
-![Screenshot_4](screenshots/Screenshot 2023-03-23 144618.png "Treasure Hunt App Homepage")
+![Screenshot_1](screenshots/Screenshot 2023-03-23 144521.png?raw=true "Optional Title")
+![Screenshot_2](screenshots/Screenshot 2023-03-23 144549.png?raw=true "Optional Title")
+![Screenshot_3](screenshots/Screenshot 2023-03-23 144618.png?raw=true "Optional Title")
+
+![Screenshot_4]("screenshots/Screenshot 2023-03-23 144618.png" "Treasure Hunt App Homepage")
 
 ### Testing
 Additionally, we have tested our app with a test API that offers practice treasure hunts with questions and fake grades.
