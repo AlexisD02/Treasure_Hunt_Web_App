@@ -68,14 +68,6 @@ Don't forget to check out the map to see your entire journey in the palm of your
 We are constantly working to improve our app and add new treasure hunts for our users to enjoy.
 Stay tuned for updates and new challenges!
 
-### App Screenshots
-
-![Screenshot_1](screenshots/Screenshot 2023-03-23 144521.png?raw=true "Optional Title")
-![Screenshot_2](screenshots/Screenshot 2023-03-23 144549.png?raw=true "Optional Title")
-![Screenshot_3](screenshots/Screenshot 2023-03-23 144618.png?raw=true "Optional Title")
-
-![Screenshot_4]("screenshots/Screenshot 2023-03-23 144618.png" "Treasure Hunt App Homepage")
-
 ### Testing
 Additionally, we have tested our app with a test API that offers practice treasure hunts with questions and fake grades.
 This allows us to thoroughly test the app's functionality and ensure that it works as expected before releasing it to the public.
