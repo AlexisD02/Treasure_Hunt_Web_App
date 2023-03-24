@@ -86,7 +86,7 @@ function handleTestStart() {
                         table += "<td>" + "Player Name: " + start_test_cases[i].player + "</td>";
                         table += "<td>" + "Treasure-hunt Name: " + start_test_cases[i].treasure_name + "</td>";
                         table += "<td>" + "Treasure-hunt Id: " + start_test_cases[i].id + "</td>";
-                        table += "" + ("<td><img src='../images/correct.png' alt='Success or failed icon'/>") + "";
+                        table += "" + ("<td><img src='images/correct.png' alt='Success or failed icon'/>") + "";
                     }
 
                     // Close the table tag
