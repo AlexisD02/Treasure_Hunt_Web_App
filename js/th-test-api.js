@@ -372,7 +372,8 @@ function handleTestLeaderboard() {
 
                     let completionTimeData = document.createElement("td");
                     completionTimeData.style.paddingRight = "50px";
-                    completionTimeData.innerText = "Completion Time: " + player.completionTime;
+                    const completionTimeDate = player.completionTime === 0 ? "Unfinished" : new Date(player.completionTime).toLocaleString();
+                    completionTimeData.innerText = "Completion Time: " + completionTimeDate;
 
                     row.appendChild(playerData);
                     row.appendChild(scoreData);
