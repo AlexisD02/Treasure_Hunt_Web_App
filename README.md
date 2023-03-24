@@ -1,6 +1,4 @@
-# co1111-assignment1
-
-# Treasure Hunt App
+# CO1111-Assignment 1 -- Treasure Hunt App
 
 Welcome to our Treasure Hunt web application! Our team has developed a unique online quiz that will challenge
 your knowledge and sense of adventure. With our application, you will have the opportunity to explore different
@@ -70,6 +68,12 @@ Don't forget to check out the map to see your entire journey in the palm of your
 We are constantly working to improve our app and add new treasure hunts for our users to enjoy.
 Stay tuned for updates and new challenges!
 
+### App Screenshots
+
+![Screenshot_1](CO1111/screenshots/Screenshot 2023-03-23 144521.png?raw=true "Optional Title")
+![Screenshot_2](CO1111/screenshots/Screenshot 2023-03-23 144549.png?raw=true "Optional Title")
+![Screenshot_3](CO1111/screenshots/Screenshot 2023-03-23 144618.png?raw=true "Optional Title")
+
 ### Testing
 Additionally, we have tested our app with a test API that offers practice treasure hunts with questions and fake grades.
 This allows us to thoroughly test the app's functionality and ensure that it works as expected before releasing it to the public.
@@ -77,5 +81,5 @@ This allows us to thoroughly test the app's functionality and ensure that it wor
 We are committed to continuously improving our app and addressing any issues that may arise. If you encounter any
 problems or have suggestions for improvements, please feel free to contact us on Facebook, Instagram, or Twitter.
 
-
+_____________________________________
 Copyright © 2022-23 Treasure Hunt App
