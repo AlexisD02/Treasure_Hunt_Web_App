@@ -63,7 +63,7 @@ header {
 
 /* CSS for the next page button */
 .next-page {
-    margin-top: 10%;
+    margin-top: 18px;
     text-align: center;
 }
 
@@ -224,7 +224,7 @@ a:hover {
 
 @media only screen and (min-width: 600px) {
     .welcome-message {
-        margin: 5%;
+        margin-top: 5%;
     }
     .next-button{
         padding: 2%;
