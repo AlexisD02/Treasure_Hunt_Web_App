@@ -143,3 +143,49 @@ th, td { border-bottom: 1px solid gray;
 .link-font {
     font-size: medium;
 }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+td:first-child {
+    font-weight: bold;
+}
+
+td:last-child {
+    font-style: italic;
+}
+
+@media screen and (max-width: 767px) {
+    table {
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
+
+    .th, .td {
+        padding: 5px;
+        font-size: 14px;
+    }
+}
