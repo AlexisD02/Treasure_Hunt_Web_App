@@ -50,11 +50,11 @@ header {
 
 /* CSS for the welcome message */
 .welcome-message {
-    margin: 16% 5% 16% 5%;
+    margin: 2% 5% 2% 5%;
     color: var(--black);
     background-color: rgba(255, 255, 255, 0.9); /* 90% opacity white */
     text-align: justify;
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1.5;
     padding: 5%;
     border: 1px solid var(--black);
@@ -63,7 +63,7 @@ header {
 
 /* CSS for the next page button */
 .next-page {
-    margin-top: 45px;
+    margin-top: 10%;
     text-align: center;
 }
 
@@ -83,7 +83,7 @@ a:hover {
     font-size: 150%;
     background-color: rgba(229, 198, 130, 0.8);
     color: var(--black);
-    padding: 10% 15%;
+    padding: 10% 13%;
     border-radius: 10px;
     border: 2px solid var(--black);
     box-shadow: 0 6px 6px rgba(0, 0, 0, 0.6);
