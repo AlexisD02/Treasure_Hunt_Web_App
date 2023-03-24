@@ -224,7 +224,7 @@ a:hover {
 
 @media only screen and (min-width: 600px) {
     .welcome-message {
-        margin-top: 5%;
+        margin-top: 3%;
     }
     .next-button{
         padding: 2%;
