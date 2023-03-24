@@ -50,8 +50,6 @@ header {
 
 /* CSS for the welcome message */
 .welcome-message {
-    display: flex;
-    align-items: center;
     margin: 5% 5% 2% 5%;
     color: var(--black);
     background-color: rgba(255, 255, 255, 0.9); /* 90% opacity white */
@@ -63,7 +61,12 @@ header {
     border-radius: 15px 50px;
 }
 
-.welcome-message img {
+#message_box {
+    display: flex;
+    align-items: center;
+}
+
+#message_box img {
     margin-right: 35px;
 }
 
